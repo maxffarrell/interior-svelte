@@ -19,9 +19,15 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright install && playwright test",
-		"gen": "wrangler types",
-		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"gen": "wrangler types"
+	},
+	"dependencies": {
+		"@fontsource-variable/geist": "^5.3.0",
+		"@fontsource-variable/geist-mono": "^5.3.0",
+		"mode-watcher": "^1.1.0",
+		"motion": "^12.43.0",
+		"phosphor-svelte": "^3.1.0",
+		"shiki": "^4.4.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -51,9 +57,5 @@
 		"vitest-browser-svelte": "^2.1.1",
 		"wrangler": "^4.97.0"
 	},
-	"packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
-	"dependencies": {
-		"@fontsource-variable/geist": "^5.3.0",
-		"mode-watcher": "^1.1.0"
-	}
+	"packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916"
 }

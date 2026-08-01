@@ -7,3 +7,10 @@ bun.lockb
 
 # Miscellaneous
 /static/
+.claude/
+
+# Generated
+worker-configuration.d.ts
+
+/src/routes/layout.css
+/plan/DESIGN.md
