@@ -1,6 +1,7 @@
 import prettier from 'eslint-config-prettier';
 import path from 'node:path';
 import js from '@eslint/js';
+import betterTailwind from 'eslint-plugin-better-tailwindcss';
 import svelte from 'eslint-plugin-svelte';
 import { defineConfig, includeIgnoreFile } from 'eslint/config';
 import globals from 'globals';
@@ -36,8 +37,30 @@ export default defineConfig(
 		}
 	},
 	{
-		// Override or add rule settings here, such as:
-		// 'svelte/button-has-type': 'error'
-		rules: {}
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js', '**/*.ts'],
+		extends: [betterTailwind.configs['recommended-error']],
+		settings: {
+			'better-tailwindcss': {
+				// Tailwind v4 has no config file; the stylesheet is the source of truth.
+				entryPoint: 'src/routes/layout.css'
+			}
+		},
+		rules: {
+			// prettier-plugin-tailwindcss already owns class order and wrapping.
+			'better-tailwindcss/enforce-consistent-class-order': 'off',
+			'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+			// The design-language classes in layout.css are hand-written CSS, not
+			// utilities, so Tailwind cannot know them.
+			'better-tailwindcss/no-unknown-classes': [
+				'error',
+				{
+					ignore: [
+						'^mat-(panel|float|well|cap|row)$',
+						'^(press|meta|tnum|fade-y|no-bar|scroll-inset)$',
+						'^shiki$'
+					]
+				}
+			]
+		}
 	}
 );

@@ -28,8 +28,8 @@
   --ink-2: #454545;
   --ink-3: #6e6e6e;
 
-  --accent: #4568ff;
-  --accent-soft: #edf1ff;
+  --accent: #d43008;
+  --accent-soft: color-mix(in srgb, #d43008 14%, #ffffff);
   --moss: #3d7a4e;
   --flag: #c0442f;
 
@@ -61,8 +61,8 @@
   --ink-2: #c2c2ba;
   --ink-3: #93938b;
 
-  --accent: #93b0ff;
-  --accent-soft: rgba(147, 176, 255, 0.14);
+  --accent: #f96743;
+  --accent-soft: color-mix(in srgb, #d43008 14%, #1d1d1a);
   --moss: #5bd79c;
   --flag: #f5897f;
 
