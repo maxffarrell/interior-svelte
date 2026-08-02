@@ -38,7 +38,13 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: preview-build
-          path: .svelte-kit/cloudflare
+          # the adapter does not bundle: _worker.js is an entry that imports
+          # ../output/server/index.js and ../cloudflare-tmp/manifest.js, and wrangler runs
+          # esbuild over it at upload time. Shipping only cloudflare/ leaves those unresolved.
+          path: |
+            .svelte-kit/cloudflare
+            .svelte-kit/cloudflare-tmp
+            .svelte-kit/output/server
           # .assetsignore keeps _worker.js out of the static assets — it must survive the round trip
           include-hidden-files: true
           if-no-files-found: error
