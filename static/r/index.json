@@ -75,5 +75,16 @@
 		],
 		"registryDependencies": [],
 		"relativeUrl": "press-depth.json"
+	},
+	{
+		"name": "expanding-search",
+		"title": "Expanding Search",
+		"type": "registry:block",
+		"description": "Icon to field with focus handled.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "expanding-search.json"
 	}
 ]

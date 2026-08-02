@@ -604,5 +604,119 @@ export const meta: Record<string, ComponentMeta> = {
 			'The result is announced once through a polite status region - the visible label swap is aria-hidden, so a screen reader hears "Copied" rather than re-reading the whole button.',
 			'Under prefers-reduced-motion the crossfade and the check draw are dropped; the state still changes, only the travel is skipped.'
 		]
+	},
+	'expanding-search': {
+		export: 'ExpandingSearch',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/expanding-search.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/expanding-search.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'label',
+				type: 'string',
+				default: '"Search"',
+				note: 'Accessible name shared by the collapsed trigger and the input, so both read the same in the a11y tree.'
+			},
+			{
+				name: 'placeholder',
+				type: 'string',
+				default: '"Search"',
+				note: 'Placeholder text; it is clipped by the shell while collapsed rather than being unmounted.'
+			},
+			{
+				name: 'resultCount',
+				type: 'number',
+				note: 'When supplied, reserves a fixed tabular slot in the field and feeds the debounced live region. Omit it and the slot is never allocated.'
+			},
+			{
+				name: 'align',
+				type: '"left" | "right"',
+				default: '"right"',
+				note: 'Which edge of the reserved track the field is anchored to. Right-anchored fields open leftward over the toolbar actions.'
+			},
+			{
+				name: 'value',
+				type: 'string',
+				note: 'Controlled query. Leave undefined to let the component own it. `bind:value` works and makes onChange optional.'
+			},
+			{
+				name: 'defaultValue',
+				type: 'string',
+				default: '""',
+				note: 'Initial query when uncontrolled. A literal, so remounting resets the field.'
+			},
+			{
+				name: 'onChange',
+				type: '(value: string) => void',
+				note: 'Fires on every keystroke. Use it to mirror state, not to run the search.'
+			},
+			{
+				name: 'onSearch',
+				type: '(value: string) => void',
+				note: 'Fires once the typing settles, and immediately on Enter. This is the one to hang a query off.'
+			},
+			{
+				name: 'onSubmit',
+				type: '(value: string) => void',
+				note: 'Enter. The pending debounce is flushed first so onSearch never arrives after it.'
+			},
+			{
+				name: 'debounce',
+				type: 'number',
+				default: '220',
+				note: 'Milliseconds of quiet before onSearch fires.'
+			},
+			{
+				name: 'open',
+				type: 'boolean',
+				note: 'Controlled expansion. Focus handling still runs; only the state lives outside. `bind:open` works too.'
+			},
+			{
+				name: 'defaultOpen',
+				type: 'boolean',
+				default: 'false',
+				note: 'Start expanded, for a page whose primary action is searching.'
+			},
+			{
+				name: 'onOpenChange',
+				type: '(open: boolean) => void',
+				note: 'Called once per real transition, never twice for the same expand.'
+			},
+			{
+				name: 'collapseOnBlur',
+				type: 'boolean',
+				default: 'true',
+				note: 'Collapse when focus leaves and the query is empty. A non-empty query is never collapsed away.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: "Blocks expansion and the input, and keeps the trigger out of the tab order's reach."
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the reserved track, so width and position are the caller’s.'
+			},
+			{
+				name: 'ExpandingSearchState',
+				type: 'new (options?: ExpandingSearchOptions | (() => ExpandingSearchOptions))',
+				note: "The disclosure, the debounce and the focus handling on their own, from './expanding-search.state.svelte' - the rune-class form of upstream's useExpandingSearch hook. Three prop bags come out of it rather than one - `rootProps`, `triggerProps`, `inputProps` - because the behaviour is spread across three elements, and each element's node is captured through an attachment so `expand()` and `collapse()` work without a bind:this. Construct it during component initialisation; it clears its own debounce on teardown."
+			}
+		],
+		notes: [
+			'The track reserves the expanded width before anything opens, so the row beside the field never reflows; neighbouring actions fade where they stand instead of being shoved sideways.',
+			'Focus moves to the input synchronously inside the click handler rather than on animation-complete, so the iOS keyboard is not suppressed and a screen reader is never left pointing at a trigger that has already gone.',
+			'Blur collapses the field only when it is empty, and a blur caused by switching browser tabs is ignored, so a typed query is never destroyed by clicking somewhere else. Containment is read from focusin/focusout, because the DOM focus and blur events do not bubble and React only appears to say otherwise.',
+			'Escape clears a non-empty query and collapses an empty one, returning focus to the trigger instead of the document body, and the event is consumed so a dialog behind the field does not close along with it.',
+			'Keystrokes are debounced before onSearch fires and Enter flushes the pending call, so the search runs once per intent; the polite live region announces only the settled result count, not one message per character.',
+			'The input holds its expanded width at all times and is clipped by the shell, so the text inside never re-wraps mid-spring, and prefers-reduced-motion drops the transitions to zero without hiding either state.'
+		]
 	}
 };

@@ -212,6 +212,36 @@
 					"type": "registry:lib"
 				}
 			]
+		},
+		{
+			"name": "expanding-search",
+			"type": "registry:block",
+			"title": "Expanding Search",
+			"description": "Icon to field with focus handled.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/expanding-search.svelte",
+					"type": "registry:component",
+					"target": "interior/expanding-search.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/expanding-search.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/expanding-search.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
 		}
 	]
 }

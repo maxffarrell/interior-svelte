@@ -1,5 +1,6 @@
 import type { Component } from 'svelte';
 import CopyButtonDemo from './copy-button-demo.svelte';
+import ExpandingSearchDemo from './expanding-search-demo.svelte';
 import HoldToConfirmDemo from './hold-to-confirm-demo.svelte';
 import IconMorphDemo from './icon-morph-demo.svelte';
 import LikeBurstDemo from './like-burst-demo.svelte';
@@ -9,6 +10,7 @@ import RippleDemo from './ripple-demo.svelte';
 
 export const demos: Record<string, Component> = {
 	'copy-button': CopyButtonDemo,
+	'expanding-search': ExpandingSearchDemo,
 	'hold-to-confirm': HoldToConfirmDemo,
 	'icon-morph': IconMorphDemo,
 	'like-burst': LikeBurstDemo,
