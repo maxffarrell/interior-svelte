@@ -17,20 +17,19 @@
 	<div
 		aria-hidden={searching}
 		data-searching={searching || undefined}
-		class="ml-auto flex items-center gap-1.5 transition-opacity data-searching:opacity-0"
+		class="relative z-10 mr-11 ml-auto flex items-center gap-1.5 transition-opacity data-searching:pointer-events-none data-searching:opacity-0"
 	>
 		<button type="button">Sort</button>
 		<button type="button">New</button>
 	</div>
 
-	<div class="absolute inset-y-0 right-2 w-60">
-		<ExpandingSearch
-			placeholder="Search library"
-			resultCount={hits.length}
-			debounce={200}
-			onSearch={(value) => (query = value)}
-			onOpenChange={(open) => (searching = open)}
-			onSubmit={(value) => console.log('submit', value)}
-		/>
-	</div>
+	<ExpandingSearch
+		class="inset-y-0 right-2 w-60"
+		placeholder="Search library"
+		resultCount={hits.length}
+		debounce={200}
+		onSearch={(value) => (query = value)}
+		onOpenChange={(open) => (searching = open)}
+		onSubmit={(value) => console.log('submit', value)}
+	/>
 </div>

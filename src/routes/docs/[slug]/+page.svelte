@@ -4,6 +4,7 @@
 	import Preview from '#lib/components/docs/preview.svelte';
 	import TerminalBlock from '#lib/components/docs/terminal-block.svelte';
 	import { bleedDemos, demos } from '#lib/demos';
+	import { examples } from '#lib/usage';
 	import { sheet } from './sheet.remote';
 
 	let { params } = $props();
@@ -12,6 +13,7 @@
 
 	const entry = $derived(data.entry);
 	const Demo = $derived(demos[entry.slug]);
+	const Example = $derived(examples[entry.slug]);
 </script>
 
 <svelte:head>
@@ -62,13 +64,6 @@
 		</p>
 		<TerminalBlock commands={data.install} />
 
-		{#if data.usage}
-			<h2 class="mt-12 mb-3 text-[11px] font-semibold tracking-[0.08em] text-ink-3 uppercase">
-				Usage
-			</h2>
-			<CodeBlock html={data.usage.html} code={data.usage.code} filename="+page.svelte" />
-		{/if}
-
 		<h2 class="mt-12 mb-3 text-[11px] font-semibold tracking-[0.08em] text-ink-3 uppercase">
 			Source
 		</h2>
@@ -78,6 +73,26 @@
 				<CodeBlock html={file.html} code={file.code} filename={file.path} />
 			{/each}
 		</div>
+
+		<h2 class="mt-12 mb-3 text-[11px] font-semibold tracking-[0.08em] text-ink-3 uppercase">
+			Usage
+		</h2>
+
+		<Preview label="example">
+			<Example />
+		</Preview>
+		<CodeBlock html={data.example.html} code={data.example.code} filename="+page.svelte" />
+
+		{#if data.usage}
+			<h2 class="mt-12 mb-3 text-[11px] font-semibold tracking-[0.08em] text-ink-3 uppercase">
+				In your app
+			</h2>
+			<p class="mb-3 max-w-[58ch] text-[13.5px] leading-relaxed text-ink-2">
+				The same component with the wiring a route actually needs: values arriving as props, a
+				request behind the action, somewhere to go afterwards.
+			</p>
+			<CodeBlock html={data.usage.html} code={data.usage.code} filename="src/routes/+page.svelte" />
+		{/if}
 
 		{#if entry.props?.length}
 			<h2 class="mt-12 mb-3 text-[11px] font-semibold tracking-[0.08em] text-ink-3 uppercase">

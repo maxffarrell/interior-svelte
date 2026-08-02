@@ -18,6 +18,16 @@ const usages = import.meta.glob('/src/lib/usage/*.usage.svelte', {
 	eager: true
 }) as Record<string, string>;
 
+/**
+ * The file the page actually mounts, read here as text as well, so the listing under the
+ * stage is the same bytes the stage ran and the two cannot drift apart.
+ */
+const examples = import.meta.glob('/src/lib/usage/*.example.svelte', {
+	query: '?raw',
+	import: 'default',
+	eager: true
+}) as Record<string, string>;
+
 const SITE = 'https://interior-svelte.max-gottschalk.workers.dev';
 
 /**
@@ -70,6 +80,10 @@ export const sheet = prerender(
 		const rawUsage = usages[`/src/lib/usage/${entry.slug}.usage.svelte`];
 		const usage = rawUsage ? asConsumerWrites(rawUsage) : null;
 
+		const rawExample = examples[`/src/lib/usage/${entry.slug}.example.svelte`];
+		if (!rawExample) error(500, `Registry lists ${entry.slug} as ready but it has no example`);
+		const example = asConsumerWrites(rawExample);
+
 		const install = {} as Record<PackageManager, Command>;
 		for (const pm of packageManagers) {
 			const code = `${dlx[pm]} shadcn-svelte@latest add ${SITE}/r/${entry.slug}.json`;
@@ -82,6 +96,7 @@ export const sheet = prerender(
 			dependencies: meta[entry.slug]?.dependencies ?? [],
 			install,
 			sources: files,
+			example: { code: example, html: await highlight(example, 'svelte') },
 			usage: usage ? { code: usage, html: await highlight(usage, 'svelte') } : null
 		};
 	},
