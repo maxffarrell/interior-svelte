@@ -1,7 +1,7 @@
 {
 	"$schema": "https://shadcn-svelte.com/schema/registry.json",
 	"name": "interior-svelte",
-	"homepage": "https://interior-svelte.pages.dev",
+	"homepage": "https://interior-svelte.max-gottschalk.workers.dev",
 	"items": [
 		{
 			"name": "copy-button",

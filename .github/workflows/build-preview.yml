@@ -1,0 +1,53 @@
+name: Build Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# cancel in-progress runs on new commits to the same PR (github.event.number)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+# this workflow runs untrusted PR code, so it never gets secrets or write access.
+# the actual upload happens in deploy-preview.yml via workflow_run.
+permissions:
+  contents: read
+
+env:
+  WRANGLER_SEND_METRICS: false
+
+jobs:
+  build-preview:
+    name: Build preview bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Build site
+        run: pnpm build
+
+      - name: Record PR number
+        run: echo "${{ github.event.number }}" > pr-number.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: preview-build
+          path: .svelte-kit/cloudflare
+          # .assetsignore keeps _worker.js out of the static assets — it must survive the round trip
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload PR metadata
+        uses: actions/upload-artifact@v7
+        with:
+          name: preview-meta
+          path: pr-number.txt
+          if-no-files-found: error
+          retention-days: 1

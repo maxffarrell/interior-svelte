@@ -18,7 +18,7 @@ const usages = import.meta.glob('/src/lib/usage/*.usage.svelte', {
 	eager: true
 }) as Record<string, string>;
 
-const SITE = 'https://interior-svelte.pages.dev';
+const SITE = 'https://interior-svelte.max-gottschalk.workers.dev';
 
 /**
  * Our own files import through `#lib`, because SvelteKit 3 removed `$lib`. What a reader

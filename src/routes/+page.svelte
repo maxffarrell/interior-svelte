@@ -3,7 +3,7 @@
 	import Logo from '#lib/components/site/logo.svelte';
 	import ThemeToggle from '#lib/components/site/theme-toggle.svelte';
 
-	const SITE = 'https://interior-svelte.pages.dev';
+	const SITE = 'https://interior-svelte.max-gottschalk.workers.dev';
 	const REPO = 'https://github.com/max-got/interior-dev-svelte';
 	const UPSTREAM = 'https://github.com/ddoemonn/interior';
 </script>

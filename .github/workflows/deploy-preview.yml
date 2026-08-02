@@ -1,0 +1,86 @@
+name: Upload Preview Deployment
+
+on:
+  workflow_run:
+    workflows: [Build Preview Deployment]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+env:
+  WRANGLER_SEND_METRICS: false
+
+jobs:
+  deploy-preview:
+    name: Upload preview version to Cloudflare Workers
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download PR metadata
+        uses: actions/download-artifact@v8
+        with:
+          name: preview-meta
+          path: preview-meta
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      # the PR number comes from an untrusted workflow, so strip it down to digits
+      # before it reaches a shell command or a preview alias
+      - name: Resolve PR number
+        id: pr
+        run: |
+          number="$(tr -dc '0-9' < preview-meta/pr-number.txt)"
+          if [ -z "$number" ]; then
+            echo "::error::Could not resolve a PR number from the build artifact"
+            exit 1
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      # checked out from the default branch, not the PR head — wrangler.jsonc must stay trusted
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: preview-build
+          path: .svelte-kit/cloudflare
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Upload preview version
+        id: preview
+        uses: cloudflare/wrangler-action@v4
+        with:
+          # account_id lives in wrangler.jsonc, so only the token needs to be a secret
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          packageManager: pnpm
+          command: versions upload --preview-alias pr-${{ steps.pr.outputs.number }} --message "PR #${{ steps.pr.outputs.number }}"
+
+      - name: Comment preview URL on the PR
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          number: ${{ steps.pr.outputs.number }}
+          header: preview-deployment
+          message: |
+            ### ⚡ Preview deployment
+
+            | | |
+            | --- | --- |
+            | **Preview URL** | ${{ steps.preview.outputs.deployment-url }} |
+            | **Alias** | `pr-${{ steps.pr.outputs.number }}` |
+            | **Commit** | `${{ github.event.workflow_run.head_sha }}` |
+
+      - name: Print deployment url
+        env:
+          SITE_URL: ${{ steps.preview.outputs.deployment-url }}
+        run: echo "$SITE_URL"
