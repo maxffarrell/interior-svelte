@@ -77,6 +77,17 @@
 		"relativeUrl": "press-depth.json"
 	},
 	{
+		"name": "floating-label",
+		"title": "Floating Label",
+		"type": "registry:block",
+		"description": "The label makes room instead of disappearing.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "floating-label.json"
+	},
+	{
 		"name": "expanding-search",
 		"title": "Expanding Search",
 		"type": "registry:block",

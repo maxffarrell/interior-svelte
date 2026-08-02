@@ -50,6 +50,91 @@ export type ComponentMeta = {
  * Append as each one lands.
  */
 export const meta: Record<string, ComponentMeta> = {
+	'floating-label': {
+		export: 'FloatingLabel',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/floating-label.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/floating-label.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'label',
+				type: 'string',
+				note: "The field's name. It moves into a reserved slot above the text; it is never swapped out for a placeholder."
+			},
+			{
+				name: 'value',
+				type: 'string',
+				note: 'Controlled value. Omit for an uncontrolled field and the label still tracks the DOM node.'
+			},
+			{
+				name: 'defaultValue',
+				type: 'string',
+				note: 'Uncontrolled starting value. Counted on the first render, so a pre-filled field never animates its label on load.'
+			},
+			{
+				name: 'onChange',
+				type: '(value: string) => void',
+				note: 'Receives the value, so `onChange={(v) => (email = v)}` is the whole handler.'
+			},
+			{
+				name: 'hint',
+				type: 'string',
+				note: 'Secondary line under the field. Read once by screen readers through aria-describedby, not re-announced per keystroke.'
+			},
+			{
+				name: 'invalid',
+				type: 'boolean',
+				default: 'false',
+				note: 'Recolours the border and the label and sets aria-invalid. The message itself stays the caller’s job.'
+			},
+			{
+				name: 'maxlength',
+				type: 'number',
+				note: 'Enables the counter. Its width is reserved at the largest string it can ever show, so digits rolling over never nudge the row.'
+			},
+			{
+				name: 'required',
+				type: 'boolean',
+				default: 'false',
+				note: 'Sets the native constraint and marks the label. The asterisk is aria-hidden because the input already announces required.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Dims the field and drops focus state, so a field disabled mid-focus does not keep a lit border.'
+			},
+			{
+				name: 'ref',
+				type: 'HTMLInputElement | null',
+				default: 'null',
+				note: 'Bindable. The input node, for form libraries that focus or scroll to a field.'
+			},
+			{
+				name: 'FloatingLabelState',
+				type: '(options: FloatingLabelOptions | (() => FloatingLabelOptions)) => FloatingLabelState',
+				note: "The machine on its own, from './floating-label.state.svelte' — the rune-class form of upstream's useFloatingLabel hook. Spread `inputProps` onto any input and read `raised`, `filled`, `focused`, `length` and `instant`."
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the wrapper. Width and margins are yours.'
+			}
+		],
+		notes: [
+			'The label makes room instead of disappearing: the field reserves the raised row and the hint row at mount, so it stands the same height in every reachable state and a counter, an error colour or a hint arriving on blur cannot push the submit button down the page.',
+			'The label travels on transform only — y and scale, origin pinned to its left edge — so raising it costs no layout and the spring resumes from wherever the label currently is when you refocus a field you were leaving.',
+			'A value the browser restores on back-navigation, or one a password manager writes without firing a framework change event, still raises the label: the field reads its own node on mount and listens for native input and change, so text is never printed underneath the label.',
+			'The mount-time raise is applied with zero duration, so a field that arrives pre-filled from the server presents its label already raised rather than animating on page load.',
+			'Under prefers-reduced-motion the label still occupies the raised slot and the hint still changes; only the trip is skipped, and nothing is hidden.',
+			'Screen readers get the hint once through aria-describedby and never hear the character counter, which is aria-hidden — the native maxlength attribute carries that information instead of sixty live-region updates.'
+		]
+	},
 	'hold-to-confirm': {
 		export: 'HoldToConfirm',
 		dependencies: ['motion-sv'],
@@ -517,7 +602,7 @@ export const meta: Record<string, ComponentMeta> = {
 			{
 				name: 'class',
 				type: 'string',
-				note: 'Merged last onto the button, so width and spacing are the caller\u2019s.'
+				note: 'Merged last onto the button, so width and spacing are the caller’s.'
 			},
 			{
 				name: 'AsyncActionState',

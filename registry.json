@@ -214,6 +214,36 @@
 			]
 		},
 		{
+			"name": "floating-label",
+			"type": "registry:block",
+			"title": "Floating Label",
+			"description": "The label makes room instead of disappearing.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/floating-label.svelte",
+					"type": "registry:component",
+					"target": "interior/floating-label.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/floating-label.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/floating-label.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
 			"name": "expanding-search",
 			"type": "registry:block",
 			"title": "Expanding Search",
