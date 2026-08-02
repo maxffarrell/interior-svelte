@@ -373,7 +373,17 @@ html[data-pm="yarn"] [data-pm-cmd="yarn"] {
   }
 }
 
+::view-transition-group(sidebar-cursor) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 /* ── reduced motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(sidebar-cursor) {
+    animation-duration: 0.01ms !important;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

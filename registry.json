@@ -212,6 +212,186 @@
 					"type": "registry:lib"
 				}
 			]
+		},
+		{
+			"name": "floating-label",
+			"type": "registry:block",
+			"title": "Floating Label",
+			"description": "The label makes room instead of disappearing.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/floating-label.svelte",
+					"type": "registry:component",
+					"target": "interior/floating-label.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/floating-label.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/floating-label.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "inline-validation",
+			"type": "registry:block",
+			"title": "Inline Validation",
+			"description": "Error message that does not shove the form.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/inline-validation.svelte",
+					"type": "registry:component",
+					"target": "interior/inline-validation.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/inline-validation.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/inline-validation.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "password-strength",
+			"type": "registry:block",
+			"title": "Password Strength",
+			"description": "Strength read segment by segment.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/password-strength.svelte",
+					"type": "registry:component",
+					"target": "interior/password-strength.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/password-strength.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/password-strength.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "otp-input",
+			"type": "registry:block",
+			"title": "OTP Input",
+			"description": "Auto advance, paste, error recovery.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/otp-input.svelte",
+					"type": "registry:component",
+					"target": "interior/otp-input.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/otp-input.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/otp-input.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "tag-input",
+			"type": "registry:block",
+			"title": "Tag Input",
+			"description": "Enter adds, backspace highlights then removes.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/tag-input.svelte",
+					"type": "registry:component",
+					"target": "interior/tag-input.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/tag-input.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/tag-input.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "expanding-search",
+			"type": "registry:block",
+			"title": "Expanding Search",
+			"description": "Icon to field with focus handled.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/expanding-search.svelte",
+					"type": "registry:component",
+					"target": "interior/expanding-search.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/expanding-search.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/expanding-search.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
 		}
 	]
 }
