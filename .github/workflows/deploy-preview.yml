@@ -17,6 +17,9 @@ jobs:
     name: Upload preview version to Cloudflare Workers
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: preview
+      url: ${{ steps.preview.outputs.deployment-url }}
     permissions:
       actions: read
       contents: read
@@ -53,7 +56,9 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: preview-build
-          path: .svelte-kit/cloudflare
+          # the artifact is rooted at .svelte-kit, so it restores cloudflare/,
+          # cloudflare-tmp/ and output/server/ back where _worker.js expects them
+          path: .svelte-kit
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
