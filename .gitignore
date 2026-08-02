@@ -24,5 +24,5 @@ vite.config.ts.timestamp-*
 # Playwright
 test-results
 
-# Claude Code — settings.json is shared, settings.local.json is per-machine
+!.claude/
 .claude/settings.local.json
