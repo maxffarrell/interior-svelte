@@ -1,0 +1,79 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# cancel in-progress runs on new commits to the same PR (github.event.number)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  WRANGLER_SEND_METRICS: false
+
+jobs:
+  preview:
+    name: Preview deployment
+    runs-on: ubuntu-latest
+
+    # `pull_request` withholds every secret from a fork-triggered run, so a fork could not
+    # deploy even if it reached this job - skip it outright rather than queue an approval
+    # whose only possible outcome is a failed run.
+    #
+    # Note the guard is not the security boundary: a fork PR carries its own copy of this
+    # file and could delete the line. What actually protects the token is that GitHub never
+    # hands secrets to a fork on this trigger, backed by the first-time-contributor approval
+    # policy and the `preview` environment reviewer. When approving a deployment, check
+    # whether the PR touched .github/ before you click.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    # requires a reviewer, so the job does not start - and nothing is built or uploaded -
+    # until the deployment is approved by hand
+    environment:
+      name: preview
+      url: ${{ steps.preview.outputs.deployment-url }}
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Build site
+        run: pnpm build
+
+      - name: Upload preview version
+        id: preview
+        uses: cloudflare/wrangler-action@v4
+        with:
+          # account_id lives in wrangler.jsonc, so only the token needs to be a secret
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          packageManager: pnpm
+          command: versions upload --preview-alias pr-${{ github.event.number }} --message "PR #${{ github.event.number }}"
+
+      - name: Comment preview URL on the PR
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: preview-deployment
+          message: |
+            ### ⚡ Preview deployment
+
+            | | |
+            | --- | --- |
+            | **Preview URL** | ${{ steps.preview.outputs.deployment-url }} |
+            | **Alias** | `pr-${{ github.event.number }}` |
+            | **Commit** | `${{ github.event.pull_request.head.sha }}` |
+
+      - name: Print deployment url
+        env:
+          SITE_URL: ${{ steps.preview.outputs.deployment-url }}
+        run: echo "$SITE_URL"

@@ -48,6 +48,22 @@ jobs:
       - name: Run wrangler types and svelte-check
         run: pnpm check
 
+  # the preview deployment builds too, but only after a human approves it - this keeps a
+  # broken build (and `wrangler types` drift, which `pnpm build` checks) blocking the merge
+  # on its own, without anyone having to click anything
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Build site
+        run: pnpm build
+
   test:
     name: Unit tests
     runs-on: ubuntu-latest
