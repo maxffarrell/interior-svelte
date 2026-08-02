@@ -1,8 +1,15 @@
 <!doctype html>
-<html lang="en" class="h-full antialiased">
+<html lang="en" class="h-full antialiased" data-pm="npm">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<script>
+			try {
+				var pm = localStorage.getItem('interior:pm');
+				if (/^(npm|pnpm|bun|yarn)$/.test(pm)) document.documentElement.dataset.pm = pm;
+			} catch (e) {}
+		</script>
 		<meta name="text-scale" content="scale" />
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141312" />
