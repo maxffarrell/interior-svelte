@@ -283,6 +283,84 @@ html.dark .shiki span {
   padding-inline: 18px;
 }
 
+
+html {
+  --pm-i: 0;
+}
+html[data-pm="pnpm"] {
+  --pm-i: 1;
+}
+html[data-pm="bun"] {
+  --pm-i: 2;
+}
+html[data-pm="yarn"] {
+  --pm-i: 3;
+}
+
+
+[data-pm-cmd] {
+  visibility: hidden;
+}
+
+html[data-pm="npm"] [data-pm-cmd="npm"],
+html[data-pm="pnpm"] [data-pm-cmd="pnpm"],
+html[data-pm="bun"] [data-pm-cmd="bun"],
+html[data-pm="yarn"] [data-pm-cmd="yarn"] {
+  visibility: visible;
+}
+
+
+@layer base {
+  [data-pm-opt] {
+    color: var(--ink-3);
+  }
+
+  html[data-pm="npm"] [data-pm-opt="npm"],
+  html[data-pm="pnpm"] [data-pm-opt="pnpm"],
+  html[data-pm="bun"] [data-pm-opt="bun"],
+  html[data-pm="yarn"] [data-pm-opt="yarn"] {
+    color: var(--ink);
+  }
+}
+
+
+.term .shiki .line {
+  padding-inline: 0;
+}
+
+
+@property --fade-l {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fade-r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.fade-scroll {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-l),
+    black calc(100% - var(--fade-r)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-l),
+    black calc(100% - var(--fade-r)),
+    transparent
+  );
+  transition:
+    --fade-l 0.18s ease,
+    --fade-r 0.18s ease;
+}
+
 /* ── focus ─────────────────────────────────────────────────── */
 
 /* In @layer base so a component that draws its own focus can opt out with a
