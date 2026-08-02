@@ -183,7 +183,10 @@
 		{#each entries as entry (entry.slug)}
 			<span
 				data-state={stripState(entry)}
-				class="block size-1 rounded-[1px] transition-colors duration-200 data-[state=here]:bg-accent data-[state=planned]:bg-ink/13 data-[state=ready]:bg-ink/42"
+				class={cn(
+					'block size-1 rounded-[1px] transition-colors duration-200 data-[state=here]:bg-accent data-[state=planned]:bg-ink/13 data-[state=ready]:bg-ink/42',
+					'data-[state=here]:[view-transition-name:sidebar-cursor]'
+				)}
 			></span>
 		{/each}
 	</span>

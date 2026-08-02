@@ -88,6 +88,50 @@
 		"relativeUrl": "floating-label.json"
 	},
 	{
+		"name": "inline-validation",
+		"title": "Inline Validation",
+		"type": "registry:block",
+		"description": "Error message that does not shove the form.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "inline-validation.json"
+	},
+	{
+		"name": "password-strength",
+		"title": "Password Strength",
+		"type": "registry:block",
+		"description": "Strength read segment by segment.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "password-strength.json"
+	},
+	{
+		"name": "otp-input",
+		"title": "OTP Input",
+		"type": "registry:block",
+		"description": "Auto advance, paste, error recovery.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "otp-input.json"
+	},
+	{
+		"name": "tag-input",
+		"title": "Tag Input",
+		"type": "registry:block",
+		"description": "Enter adds, backspace highlights then removes.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "tag-input.json"
+	},
+	{
 		"name": "expanding-search",
 		"title": "Expanding Search",
 		"type": "registry:block",
