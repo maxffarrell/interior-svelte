@@ -1,0 +1,217 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry.json",
+	"name": "interior-svelte",
+	"homepage": "https://interior-svelte.pages.dev",
+	"items": [
+		{
+			"name": "copy-button",
+			"type": "registry:block",
+			"title": "Copy Button",
+			"description": "Copy to tick, width locked, reverts after 2s.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/copy-button.svelte",
+					"type": "registry:component",
+					"target": "interior/copy-button.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/copy-button.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/copy-button.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "loading-button",
+			"type": "registry:block",
+			"title": "Loading Button",
+			"description": "Label to state without layout shift.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/loading-button.svelte",
+					"type": "registry:component",
+					"target": "interior/loading-button.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/loading-button.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/loading-button.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "hold-to-confirm",
+			"type": "registry:block",
+			"title": "Hold to Confirm",
+			"description": "A guard rail in front of destructive actions.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/hold-to-confirm.svelte",
+					"type": "registry:component",
+					"target": "interior/hold-to-confirm.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/hold-to-confirm.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/hold-to-confirm.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "like-burst",
+			"type": "registry:block",
+			"title": "Like Burst",
+			"description": "Optimistic like that survives rapid taps.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/like-burst.svelte",
+					"type": "registry:component",
+					"target": "interior/like-burst.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/like-burst.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/like-burst.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "ripple",
+			"type": "registry:block",
+			"title": "Ripple",
+			"description": "Touch feedback from the pointer origin.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/ripple.svelte",
+					"type": "registry:component",
+					"target": "interior/ripple.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/ripple.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/ripple.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "icon-morph",
+			"type": "registry:block",
+			"title": "Icon Morph",
+			"description": "Play/pause, menu/close as one mechanism.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/icon-morph.svelte",
+					"type": "registry:component",
+					"target": "interior/icon-morph.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/icon-morph.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/icon-morph.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "press-depth",
+			"type": "registry:block",
+			"title": "Press Depth",
+			"description": "The feeling that the press landed.",
+			"dependencies": [
+				"motion-sv"
+			],
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/press-depth.svelte",
+					"type": "registry:component",
+					"target": "interior/press-depth.svelte"
+				},
+				{
+					"path": "./src/lib/components/interior/press-depth.state.svelte.ts",
+					"type": "registry:hook",
+					"target": "interior/press-depth.state.svelte.ts"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		}
+	]
+}

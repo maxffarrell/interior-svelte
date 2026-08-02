@@ -1,0 +1,608 @@
+export type Prop = {
+	name: string;
+	type: string;
+	default?: string;
+	note: string;
+};
+
+export type ComponentMeta = {
+	/** the conventional import name for the component's default export */
+	export: string;
+	/**
+	 * There is deliberately no `usage` field. The example lives at
+	 * `src/lib/usage/<slug>.usage.svelte` as a real component, so ESLint, `svelte-check`
+	 * and the autofixer all police it and it cannot drift from the API it documents.
+	 */
+	props: Prop[];
+	/**
+	 * What this component refuses to get wrong. Deliberately **not rendered** on the
+	 * docs page - upstream does not either. It is the porting contract: walk this list
+	 * against the running demo before ticking the component off in PROGRESS.md.
+	 */
+	notes: string[];
+	/**
+	 * npm packages the component imports, e.g. `['motion']`. Drives both the
+	 * `dependencies` field of the generated shadcn registry item and the Install
+	 * section of the docs page - so neither is hardcoded. Omit when there are none;
+	 * a component with no dependencies should say so rather than print a command
+	 * nobody needs to run.
+	 */
+	dependencies?: string[];
+	/** other slugs in this registry the component composes, e.g. `['ripple']` */
+	registryDependencies?: string[];
+	/**
+	 * Extra files shipped alongside the component, in shadcn's own registry-item shape.
+	 * `type` is one of shadcn's file types - `registry:hook` for a `.svelte.ts` rune
+	 * module, the Svelte answer to one of upstream's hooks. A `target` keeps the file
+	 * beside the component rather than in the consumer's hooks directory, which is what
+	 * lets the component import it relatively and skip aliasing entirely.
+	 */
+	files?: Array<{ path: string; type: string; target?: string }>;
+};
+
+/**
+ * A slug appearing here is what makes a component `ready`: it gets a docs page, a
+ * source listing and a prerender entry. Everything else in the registry renders as
+ * `planned`.
+ *
+ * Each component owns exactly two source files and one entry in this map, so nothing
+ * that builds a component ever has to touch a file another component also touches.
+ * Append as each one lands.
+ */
+export const meta: Record<string, ComponentMeta> = {
+	'hold-to-confirm': {
+		export: 'HoldToConfirm',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/hold-to-confirm.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/hold-to-confirm.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'onConfirm',
+				type: '() => void',
+				note: 'Fires once, only when the hold reaches full duration. A click never reaches it.'
+			},
+			{
+				name: 'label',
+				type: 'string',
+				note: "The resting label. It stays the button's accessible name in every state, including after it commits."
+			},
+			{
+				name: 'onAbort',
+				type: '() => void',
+				note: 'Fires the moment a hold is released early, including a stray click. Useful for measuring how often people almost destroyed something.'
+			},
+			{
+				name: 'confirmLabel',
+				type: 'string',
+				default: '"Confirmed"',
+				note: 'Shown after commit and announced once through a polite live region.'
+			},
+			{
+				name: 'duration',
+				type: 'number',
+				default: '1800',
+				note: 'Milliseconds of continuous hold required. Also the number spoken in the screen reader hint.'
+			},
+			{
+				name: 'resetAfter',
+				type: 'number',
+				default: '1600',
+				note: 'Milliseconds the confirmed state is held before the button returns to rest. Set to 0 to keep it confirmed and reset it yourself.'
+			},
+			{
+				name: 'steps',
+				type: 'number',
+				default: '20',
+				note: 'Render budget for the hold. Progress is sampled this many times, and the sweep runs as one continuous animation independent of them.'
+			},
+			{
+				name: 'releaseRate',
+				type: 'number',
+				default: '2.5',
+				note: 'How many times faster progress drains than it fills when you let go. Re-pressing mid-drain resumes from what is left.'
+			},
+			{
+				name: 'moveTolerance',
+				type: 'number',
+				default: '10',
+				note: 'Pixels the pointer may wander from where it landed before the hold is released.'
+			},
+			{
+				name: 'haptic',
+				type: 'boolean',
+				default: 'true',
+				note: 'Fires a 14ms vibration at commit where the platform supports it.'
+			},
+			{
+				name: 'HoldToConfirmState',
+				type: 'new (options: HoldToConfirmOptions | (() => HoldToConfirmOptions))',
+				note: "The machine on its own, from './hold-to-confirm.state.svelte' - the rune-class form of upstream's useHoldToConfirm hook. Spread `hold.props` onto whatever should be held - it carries every pointer and key path and the attachment that cleans them up - and read `phase`, `step` and `progress`. Both files land in your interior/ directory, so the component imports it relatively."
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Marked with aria-disabled rather than the disabled attribute, so focus is never dropped to the body mid-hold.'
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: "Merged last onto the button, so the surface, radius and width are the caller's."
+			}
+		],
+		notes: [
+			'A click cannot confirm: the click event is prevented at every stage, so a mis-aimed pointer, a double-click on the row underneath, or a stray Enter on a focused button destroys nothing.',
+			'Releasing early does not snap the progress to zero, it drains at a bounded rate, and pressing again resumes from whatever is left rather than restarting the count.',
+			'The label does not change while you hold. A block sweeps across the button and the same text inverts inside it, so the only thing moving is the progress itself, and the button never changes width. Layout never reflows when the state changes.',
+			'Progress arrives as twenty discrete steps rather than a float, so a 1.2 second hold costs twenty renders instead of eighty, and nothing reactive is written per animation frame.',
+			'Losing the window, hiding the tab, dragging past the move tolerance, or blurring the button all release the hold, so a hold can never survive in the background and fire when nobody is watching.',
+			'Screen readers get a static hint naming the required hold time and one polite announcement at commit, never a stream of progress updates, and prefers-reduced-motion removes the springs while leaving the hold itself intact, because the delay is the guard rail and not decoration.'
+		]
+	},
+	'like-burst': {
+		export: 'LikeBurst',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/like-burst.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/like-burst.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'initialLiked',
+				type: 'boolean',
+				default: 'false',
+				note: 'Server truth at mount. Read once; the component owns the value afterwards, so a prop update never yanks the heart back mid-gesture.'
+			},
+			{
+				name: 'initialCount',
+				type: 'number',
+				default: '0',
+				note: 'Server truth at mount. Both reachable counts, base and base + 1, are measured up front to reserve the width.'
+			},
+			{
+				name: 'onCommit',
+				type: '(liked: boolean, signal: AbortSignal) => Promise<unknown>',
+				note: 'Called once per settled intent, never once per tap. Reject to trigger the rollback; the signal aborts when a newer intent supersedes this one.'
+			},
+			{
+				name: 'onError',
+				type: '(error: unknown) => void',
+				note: 'Fires after the UI has already rolled back to the last confirmed state, so the handler only has to explain, not repair.'
+			},
+			{
+				name: 'onToggle',
+				type: '(liked: boolean) => void',
+				note: 'Fires on every tap with the intended state. Use it for analytics; do not use it for writes.'
+			},
+			{
+				name: 'settle',
+				type: 'number',
+				default: '400',
+				note: 'Milliseconds of quiet before intent is committed. A burst of taps inside this window collapses into at most one request.'
+			},
+			{
+				name: 'label',
+				type: 'string',
+				default: '"Like"',
+				note: 'The accessible name in both states, and the resting label. The pressed state is carried by aria-pressed, not by the name.'
+			},
+			{
+				name: 'activeLabel',
+				type: 'string',
+				default: '"Liked"',
+				note: 'Visible label once liked. Shares a grid cell with label, so the button is the width of the wider of the two at all times.'
+			},
+			{
+				name: 'format',
+				type: '(value: number) => string',
+				default: 'Intl.NumberFormat("en-US")',
+				note: 'Formats the count. Must be pure and locale-fixed; it runs on the server and on the client.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Refuses new intent. A commit already in flight still settles and still reconciles.'
+			},
+			{
+				name: 'toggle()',
+				type: '() => void',
+				note: 'Not a prop: a component export. Bind the instance with bind:this to flip the like from outside - it takes the same debounced path a tap does, and does not fire onToggle.'
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the button, so width and spacing are the caller’s.'
+			},
+			{
+				name: 'OptimisticLikeState',
+				type: 'new (options?: OptimisticLikeOptions | (() => OptimisticLikeOptions))',
+				note: "The optimism on its own, from './like-burst.state.svelte' - the rune-class form of upstream's useOptimisticLike hook. `toggle` answers instantly and debounces the write; `liked`, `count`, `base`, `pending` and `burst` are what you draw from, and `settled` is the only value safe to announce. Construct it during component initialisation; it aborts the in-flight commit on teardown."
+			}
+		],
+		notes: [
+			'Nine taps produce one request. Intent is debounced by settle, and a burst that returns to the confirmed state sends nothing at all, so a double tap is not a write followed by an undo write.',
+			'Responses that arrive out of order cannot win. Every flush increments a sequence number and aborts the previous controller, so a slow unlike landing after a fast like is discarded rather than applied.',
+			'A rejected commit rolls the count and the fill back to the last confirmed value, not to zero and not to a guess, so the number on screen is never a lie the user has to reload to discover.',
+			'The button never changes width. Both labels share one grid cell, and the count cell reserves the wider of base and base + 1 up front, so a like at 999 does not shove the row.',
+			'Screen readers get the settled value once from a polite status region; the optimistic count and the burst are aria-hidden, so a fast tapper does not queue nine announcements.',
+			'Under prefers-reduced-motion the sparks are not rendered and the fill switches with no transition. The state still arrives, only the trip is skipped.'
+		]
+	},
+	ripple: {
+		export: 'Ripple',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/ripple.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/ripple.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'children',
+				type: 'Snippet',
+				note: 'The label of the pressable surface. It is painted above the ripple layer, so the bloom never washes it out.'
+			},
+			{
+				name: 'onPress',
+				type: '() => void',
+				note: 'Fired on click, which means pointer and keyboard activation both route through the same native path.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Disables the button and refuses to spawn ripples, so a dead control never gives live feedback.'
+			},
+			{
+				name: 'max',
+				type: 'number',
+				default: '4',
+				note: 'Ceiling on simultaneous blooms. A hammered key evicts the oldest instead of growing the DOM without limit.'
+			},
+			{
+				name: 'tintClass',
+				type: 'string',
+				default: '"bg-ink/15"',
+				note: 'The bloom fill. It is ink at 15%, so it reads on both themes without a dark: variant; swap it when the surface is inverted or tinted with a brand colour.'
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the button, so radius, height and padding are the caller’s. The clip layer reads border-radius with rounded-[inherit], so overriding the radius still clips correctly.'
+			},
+			{
+				name: 'RippleState',
+				type: 'new (options?: RippleOptions | (() => RippleOptions))',
+				note: "The headless half, from './ripple.state.svelte' - the rune-class form of upstream's useRipple hook, for surfaces that are not this button. Spread nothing: `{@attach ripple.attach}` wires every pointer and key path onto the host element, and `ripples` is the list to paint. Options may be a getter when `disabled` or `max` is reactive."
+			}
+		],
+		notes: [
+			'A tap released in forty milliseconds still gets a whole bloom: the fade cannot begin until the ripple has been visible for its minimum window, so the fastest presses are the ones most implementations swallow and this one does not.',
+			'The bloom is spawned at the pointer’s coordinates inside the element rect and scaled to the distance of the farthest corner, so a press on an edge fills the surface instead of stopping short of the opposite side.',
+			'Nothing that moves is a layout property: the ripple is a fixed 40px patch, absolutely positioned inside an aria-hidden overlay, driven only by transform and opacity, so no press can shift the content sitting above it.',
+			'Pointer capture, lost capture, pointer cancel, blur, and tab hide all release through one path, so dragging off the control, scrolling the list out from under a finger, or switching tabs mid-press never strands a ripple on screen.',
+			'Space and Enter spawn from the element’s centre and release on key up, so keyboard activation is acknowledged exactly like a finger, while the overlay stays aria-hidden and the button announces itself once rather than once per bloom.',
+			'Under prefers-reduced-motion the patch arrives already at full size and only fades, so the press is still confirmed and only the travel is skipped.'
+		]
+	},
+	'icon-morph': {
+		export: 'IconMorph',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/icon-morph.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/icon-morph.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'preset',
+				type: '"menu-close" | "play-pause" | "plus-minus" | "check-close"',
+				default: '"menu-close"',
+				note: 'Built-in shape pair. Each preset ships its paths on a shared command signature so the geometry interpolates.'
+			},
+			{
+				name: 'shapes',
+				type: 'readonly MorphShape[]',
+				note: 'Your own states: `{ d: string[]; rotate?: number }` per state. Two or more; the button cycles through them.'
+			},
+			{
+				name: 'mode',
+				type: '"stroke" | "fill"',
+				default: "preset's mode",
+				note: 'Whether the paths are stroked outlines or filled bodies. Play/pause is filled, the rest are stroked.'
+			},
+			{
+				name: 'labels',
+				type: 'readonly string[]',
+				default: "preset's labels",
+				note: 'One per state. Becomes the accessible name, and the visible text when showLabel is set.'
+			},
+			{
+				name: 'active',
+				type: 'number | boolean',
+				note: 'Controlled state index. A boolean maps to 0 and 1. Bindable - bind:active writes the next index back, as a boolean if you bound a boolean. Omit to let the component own its state.'
+			},
+			{
+				name: 'defaultActive',
+				type: 'number | boolean',
+				default: '0',
+				note: 'Starting state when uncontrolled. Read once at mount, so a later change does not yank the icon back.'
+			},
+			{
+				name: 'onActiveChange',
+				type: '(index: number) => void',
+				note: 'Fires with the next index on activation, in both controlled and uncontrolled mode.'
+			},
+			{
+				name: 'semantics',
+				type: '"label" | "pressed" | "expanded"',
+				default: '"label"',
+				note: 'Which ARIA state the second index reports: none, aria-pressed, or aria-expanded.'
+			},
+			{
+				name: 'showLabel',
+				type: 'boolean',
+				default: 'false',
+				note: 'Renders the labels beside the icon. All of them share one grid cell, so the button is as wide as the longest.'
+			},
+			{
+				name: 'size',
+				type: 'number',
+				default: '20',
+				note: 'Icon box in px. The 24-unit viewBox scales to it; the button stays 36px tall.'
+			},
+			{ name: 'strokeWidth', type: 'number', default: '1.75', note: 'Stroke mode only.' },
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Blocks activation and the press displacement.'
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the button, so any of the chrome - width, padding, colour - is the caller’s.'
+			},
+			{
+				name: 'IconMorphState',
+				type: 'new (options?: IconMorphOptions | (() => IconMorphOptions))',
+				note: "The shape machine on its own, from './icon-morph.state.svelte' - the rune-class form of upstream's useIconMorph hook, along with iconMorphPresets. It hands you `slots`, `rotate`, `mode`, `label` and `index` to draw with, and `setIndex` and `toggle` to drive it. Controlled use passes `active` plus a `setActive` writer, so the index can live wherever you keep it."
+			}
+		],
+		notes: [
+			'Two icons crossfaded over each other draw both shapes at once through the middle of the transition; this renders one path list and interpolates its coordinates, so there is never a second icon on screen to catch.',
+			'Every state is padded to the same slot count, and a slot a state does not use collapses to a zero-length path and fades, so the number of paths never changes mid-flight and no stroke pops into existence.',
+			'The icon box and the label cell are reserved before the first paint - all labels stack in one grid cell - so swapping Play for Pause or Menu for Close cannot widen the button or push the row beside it.',
+			'Activating the control mid-transition resumes the spring from the geometry currently on screen, rather than snapping back to the previous shape and replaying.',
+			'Under prefers-reduced-motion the target geometry is applied in one frame; the icon still shows the correct state instead of being hidden or left mid-morph.',
+			'It is a real button with aria-pressed or aria-expanded and an accessible name that changes once per state, so a screen reader announces the new state on activation and nothing repeats it.'
+		]
+	},
+	'press-depth': {
+		export: 'PressDepth',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/press-depth.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/press-depth.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'children',
+				type: 'Snippet',
+				note: 'Label content for the key face. Rendered in a flex row with a 8px gap, so an icon and a word sit together without extra markup.'
+			},
+			{
+				name: 'depth',
+				type: 'number',
+				default: '4',
+				note: 'Travel in pixels. The wrapper reserves this space as bottom padding before the first press, so the key never changes footprint.'
+			},
+			{
+				name: 'tilt',
+				type: 'number',
+				default: '7',
+				note: 'Degrees the face leans towards the point of contact. The lean is dropped under prefers-reduced-motion; the travel is not.'
+			},
+			{
+				name: 'disabled',
+				type: 'boolean',
+				default: 'false',
+				note: 'Blocks the gesture and releases any press already in flight.'
+			},
+			{
+				name: 'type',
+				type: "'button' | 'submit' | 'reset'",
+				default: "'button'",
+				note: 'Forwarded to the underlying button so the key works inside a form.'
+			},
+			{
+				name: 'onclick',
+				type: 'MouseEventHandler<HTMLButtonElement>',
+				note: 'Native click. Activation is left to the browser, so Enter, Space, and release-outside behave exactly as they do on a plain button. Every other button attribute - aria-label, form, name, value - is forwarded the same way.'
+			},
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Appended last to the key face, so surface, padding, and type are overridable.'
+			},
+			{
+				name: 'ref',
+				type: 'HTMLButtonElement | null',
+				default: 'null',
+				note: 'Bindable. The underlying button element, for focus or measurement.'
+			},
+			{
+				name: 'PressDepthState',
+				type: 'new (options?: PressDepthOptions | (() => PressDepthOptions))',
+				note: "The gesture on its own, from './press-depth.state.svelte' - the rune-class form of upstream's usePressDepth hook, for drawing your own surface. Spread `press.props` onto the element being pressed - it carries the pointer and key paths and the attachment that marks the hit box - then draw from `pressed` and `origin`. Options are disabled, onPressStart, onPressEnd - pass them as a getter to keep disabled live. Construct it during component initialisation; it owns effects."
+			}
+		],
+		notes: [
+			'The key reserves its travel as bottom padding before the first press, so depressing it moves a transform and never the layout around it.',
+			"Press state is tracked on the window rather than the element, so a pointer that leaves the key mid-hold lifts it, and a pointer that comes back presses it again - the visual state and the browser's own click suppression agree.",
+			'A press that is interrupted by a scroll, a tab switch, a window blur, or a disabled prop arriving mid-hold releases instead of sticking down forever.',
+			'Activation stays with the browser: Enter and Space fire a real click on a real button, so no synthetic handler double-fires and no keyboard path is invented.',
+			'Auto-repeat is ignored, so holding Enter presses once instead of hammering the key sixty times a second.',
+			'The pressed state is a change of material rather than of colour: the cap with its lip crossfades into the well it has been driven into, so the depth carries the state and nothing has to be tinted to say it.',
+			'Under prefers-reduced-motion the key still lands at full depth, instantly - the confirmation survives, only the spring is dropped.'
+		]
+	},
+	'loading-button': {
+		export: 'LoadingButton',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/loading-button.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/loading-button.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'onAction',
+				type: '() => unknown',
+				note: 'The work to run. Anything thenable is awaited; a rejection settles the button into its error face and is passed to onError.'
+			},
+			{
+				name: 'label',
+				type: 'string',
+				note: 'Resting label. Also the accessible name, which follows the state rather than staying fixed.'
+			},
+			{
+				name: 'pendingLabel',
+				type: 'string',
+				default: 'label',
+				note: 'Shown while the action is in flight. Defaults to the resting label, so the button reads as the same control doing the same thing.'
+			},
+			{
+				name: 'successLabel',
+				type: 'string',
+				default: '"Done"',
+				note: 'Shown and announced when the action resolves.'
+			},
+			{
+				name: 'errorLabel',
+				type: 'string',
+				default: '"Try again"',
+				note: 'Shown and announced when it rejects. Phrased as the next action, not as a diagnosis.'
+			},
+			{
+				name: 'resetAfter',
+				type: 'number',
+				default: '1400',
+				note: 'Milliseconds the settled face is held before returning to idle.'
+			},
+			{
+				name: 'onError',
+				type: '(error: unknown) => void',
+				note: 'Receives the rejection. The button reports the failure either way; this is for logging it.'
+			},
+			{ name: 'disabled', type: 'boolean', default: 'false', note: 'Refuses the press.' },
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the button, so width and spacing are the caller\u2019s.'
+			},
+			{
+				name: 'AsyncActionState',
+				type: 'new (options: AsyncActionOptions | (() => AsyncActionOptions))',
+				note: "The four-state machine on its own, from './loading-button.state.svelte' - the rune-class form of upstream's useAsyncAction hook. Call `run`, read `status` and `pending`, and let the class hold the reset timer and the run ticket that discards a result from a superseded run. Construct it during component initialisation; it clears its own timer on teardown."
+			}
+		],
+		notes: [
+			'All four faces are mounted in one grid cell from the first paint, so the button is sized for its widest state and cannot resize when the label changes. This is the whole point: a button that grows from Save to Saving moves every control after it, mid-click.',
+			'Every run takes a ticket, and a settle from an abandoned run is discarded. Without it a slow first request can land after a fast second one and report the wrong outcome on top of it.',
+			'A press while pending is refused rather than queued, and the button carries aria-busy and aria-disabled instead of the disabled attribute - so it keeps its colours and stays in the accessibility tree while it works.',
+			'The spinner only spins while the pending face is the visible one. A hidden element animating at 60fps is work nobody can see.',
+			'The outcome is announced once from a polite region outside the button, so a screen reader hears \u201cSent\u201d rather than the whole control being read again.',
+			'Under prefers-reduced-motion the crossfade is instant and the spinner holds still; the state still changes, only the travel is dropped.'
+		]
+	},
+	'copy-button': {
+		export: 'CopyButton',
+		dependencies: ['motion-sv'],
+		files: [
+			{
+				path: './src/lib/components/interior/copy-button.state.svelte.ts',
+				type: 'registry:hook',
+				target: 'interior/copy-button.state.svelte.ts'
+			}
+		],
+		props: [
+			{
+				name: 'value',
+				type: 'string',
+				note: 'The text written to the clipboard. An empty value refuses the press rather than reporting a false success.'
+			},
+			{
+				name: 'label',
+				type: 'string',
+				default: '"Copy"',
+				note: 'Resting label, and the accessible name for every state.'
+			},
+			{
+				name: 'copiedLabel',
+				type: 'string',
+				default: '"Copied"',
+				note: 'Shown and announced after a successful write.'
+			},
+			{
+				name: 'errorLabel',
+				type: 'string',
+				default: '"Failed"',
+				note: 'Shown and announced when both the clipboard API and the fallback refuse.'
+			},
+			{
+				name: 'timeout',
+				type: 'number',
+				default: '2000',
+				note: 'Milliseconds the result is held before reverting to idle. The timer restarts on each press.'
+			},
+			{
+				name: 'onCopy',
+				type: '(value: string) => void',
+				note: 'Fires once per successful write, with the value that landed.'
+			},
+			{
+				name: 'onError',
+				type: '(reason: unknown) => void',
+				note: 'Fires with the rejection when the write could not be made.'
+			},
+			{ name: 'disabled', type: 'boolean', default: 'false', note: 'Refuses the press.' },
+			{
+				name: 'class',
+				type: 'string',
+				note: 'Merged last onto the button, so width and spacing are the caller’s.'
+			},
+			{
+				name: 'CopyToClipboardState',
+				type: 'new (options?: CopyToClipboardOptions | (() => CopyToClipboardOptions))',
+				note: "The write and its outcome on their own, from './copy-button.state.svelte' - the rune-class form of upstream's useCopyToClipboard hook. `copy(value)` returns to idle after `timeout`, `status` is what you draw from, and the execCommand fallback for insecure origins comes with it. Construct it during component initialisation; it clears its own timer on teardown."
+			}
+		],
+		notes: [
+			'All three labels are mounted in one grid cell from the first paint, so the button is sized for its widest word and cannot resize when the label swaps. A copy button that grows by six pixels on success moves everything after it in the row.',
+			'The three icons share a single cell the same way. The check is drawn rather than faded in - a normalised pathLength means the dash maths is independent of the real geometry.',
+			'Pressing again restarts the revert timer instead of stacking timers, so mashing the button holds "Copied" for the full timeout from the last press rather than reverting on the first one to land.',
+			'Clipboard access is refused outside a secure context and in some embedded webviews, so a rejected write falls back to a selected off-screen textarea, and the selection the person already had is put back afterwards.',
+			'The result is announced once through a polite status region - the visible label swap is aria-hidden, so a screen reader hears "Copied" rather than re-reading the whole button.',
+			'Under prefers-reduced-motion the crossfade and the check draw are dropped; the state still changes, only the travel is skipped.'
+		]
+	}
+};

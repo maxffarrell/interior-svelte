@@ -1,0 +1,79 @@
+[
+	{
+		"name": "copy-button",
+		"title": "Copy Button",
+		"type": "registry:block",
+		"description": "Copy to tick, width locked, reverts after 2s.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "copy-button.json"
+	},
+	{
+		"name": "loading-button",
+		"title": "Loading Button",
+		"type": "registry:block",
+		"description": "Label to state without layout shift.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "loading-button.json"
+	},
+	{
+		"name": "hold-to-confirm",
+		"title": "Hold to Confirm",
+		"type": "registry:block",
+		"description": "A guard rail in front of destructive actions.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "hold-to-confirm.json"
+	},
+	{
+		"name": "like-burst",
+		"title": "Like Burst",
+		"type": "registry:block",
+		"description": "Optimistic like that survives rapid taps.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "like-burst.json"
+	},
+	{
+		"name": "ripple",
+		"title": "Ripple",
+		"type": "registry:block",
+		"description": "Touch feedback from the pointer origin.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "ripple.json"
+	},
+	{
+		"name": "icon-morph",
+		"title": "Icon Morph",
+		"type": "registry:block",
+		"description": "Play/pause, menu/close as one mechanism.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "icon-morph.json"
+	},
+	{
+		"name": "press-depth",
+		"title": "Press Depth",
+		"type": "registry:block",
+		"description": "The feeling that the press landed.",
+		"dependencies": [
+			"motion-sv"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "press-depth.json"
+	}
+]
