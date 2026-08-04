@@ -1,0 +1,30 @@
+<script lang="ts" module>
+	import type { Snippet } from 'svelte';
+	export type WizardDirection = 1 | -1;
+	export type WizardStep = { id: string; label: string; content: Snippet };
+	export type Props = { steps: WizardStep[]; index?: number; defaultIndex?: number; onIndexChange?: (index: number, direction: WizardDirection) => void; onComplete?: () => void; complete?: boolean; height?: number; backLabel?: string; nextLabel?: string; finishLabel?: string; completeLabel?: string; completeHint?: string; label?: string; class?: string };
+</script>
+<script lang="ts">
+	// @ts-nocheck
+	import { AnimatePresence, motion } from 'motion-sv';
+	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	let { steps, index = $bindable(), defaultIndex = 0, onIndexChange, onComplete, complete = false, height = 184, backLabel = 'Back', nextLabel = 'Next', finishLabel = 'Finish', completeLabel = 'All set', completeHint = 'Step back to change anything', label = 'Steps', class: className = '' }: Props = $props();
+	let internal = $state(defaultIndex); let furthest = $state(defaultIndex); let direction = $state<WizardDirection>(1); let intent = $state<'list' | 'panel' | null>(null); let list = $state<HTMLOListElement | null>(null); let viewport = $state<HTMLDivElement | null>(null);
+	const at = $derived(Math.max(0, Math.min(steps.length - 1, index ?? internal)));
+	const current = $derived(steps[at]); const first = $derived(at === 0); const last = $derived(at === steps.length - 1);
+	function goTo(next: number) { const target = Math.max(0, Math.min(steps.length - 1, Math.trunc(next))); if (target === at) return; direction = target > at ? 1 : -1; furthest = Math.max(furthest, target); if (index === undefined) internal = target; index = target; onIndexChange?.(target, direction); }
+	function next() { if (last) onComplete?.(); else { intent = 'panel'; goTo(at + 1); } }
+	function back() { intent = 'panel'; goTo(at - 1); }
+	function keydown(event: KeyboardEvent) { let target = at; if (event.key === 'ArrowRight' || event.key === 'ArrowDown') target++; else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') target--; else if (event.key === 'Home') target = 0; else if (event.key === 'End') target = furthest; else return; event.preventDefault(); target = Math.min(target, furthest); if (target !== at) { intent = 'list'; goTo(target); } }
+	$effect(() => { if (!current) return; if (intent === 'list') list?.querySelector<HTMLElement>('[data-current="true"]')?.focus(); else if (intent === 'panel') viewport?.focus({ preventScroll: true }); intent = null; });
+</script>
+{#if current}
+<div class="w-full {className}"><p aria-live="polite" class="sr-only">Step {at + 1} of {steps.length}: {current.label}</p>
+	<span aria-hidden class="mb-2 block truncate text-[13px] font-medium text-stone-700 dark:text-stone-200">{current.label}</span>
+	<ol bind:this={list} aria-label={label} class="mb-4 flex list-none items-center gap-1 p-0">
+		{#each steps as step, i (step.id)}<li class="flex flex-1 items-center gap-1 last:flex-none">{#if i <= furthest}<button type="button" data-current={!complete && i === at ? 'true' : undefined} tabindex={!complete && i === at ? 0 : -1} aria-current={!complete && i === at ? 'step' : undefined} aria-label={`Step ${i + 1} of ${steps.length}: ${step.label}`} onclick={() => goTo(i)} onkeydown={keydown} class="rounded-[8px] outline-none focus-visible:shadow-[0_0_0_1.5px_#4568FF]"><span class="grid size-7 place-items-center rounded-[8px] border text-[11.5px] font-medium {complete || i < at ? 'border-stone-800 bg-stone-800 text-white' : i === at ? 'border-stone-200 bg-white text-stone-700' : 'border-stone-200 bg-white text-stone-400'}">{#if complete || i < at}<svg width="12" height="12" viewBox="0 0 256 256" fill="none"><polyline points="216 72 104 184 48 128" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" /></svg>{:else}{i + 1}{/if}</span></button>{:else}<span class="grid size-7 place-items-center rounded-[8px] border border-stone-200 text-[11.5px] text-stone-400">{i + 1}</span>{/if}{#if i < steps.length - 1}<span class="relative h-[3px] flex-1 overflow-hidden rounded bg-stone-100"><motion.span class="absolute inset-0 origin-left bg-stone-800" initial={false} animate={{ scaleX: complete || i < at ? 1 : 0 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 520, damping: 40, mass: 0.5 }} /></span>{/if}</li>{/each}
+	</ol>
+	<div bind:this={viewport} tabindex="-1" role="group" aria-label={`Step ${at + 1} of ${steps.length}: ${current.label}`} style:height={`${height}px`} class="relative overflow-hidden rounded-[11px] border border-stone-200 bg-white p-4 outline-none focus-visible:border-[#4568FF] dark:border-white/[0.16] dark:bg-[#1D1D1A]"><AnimatePresence initial={false}>{#if complete}<motion.div key="complete" class="flex h-full flex-col items-center justify-center gap-1.5"><p class="text-[13px] font-medium">{completeLabel}</p><p class="text-[12.5px] text-stone-400">{completeHint}</p></motion.div>{:else}<motion.div key={current.id} initial={reducedMotion.current ? { opacity: 0 } : { opacity: 0, x: direction * 22 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion.current ? { opacity: 0 } : { opacity: 0, x: direction * -22 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }} class="absolute inset-0 overflow-y-auto p-4 text-[13.5px] leading-relaxed text-stone-700 dark:text-stone-200">{@render current.content()}</motion.div>{/if}</AnimatePresence></div>
+	<div class="mt-3 flex h-9 items-center gap-3">{#if !first}<button type="button" onclick={back} class="h-9 rounded-[9px] border border-stone-200 bg-white px-3 text-[13px] font-medium">{backLabel}</button>{/if}{#if !complete}<button type="button" aria-label={last ? finishLabel : nextLabel} onclick={next} class="ml-auto h-9 rounded-[9px] bg-stone-800 px-3.5 text-[13px] font-medium text-white">{last ? finishLabel : nextLabel}</button>{/if}</div>
+</div>
+{/if}

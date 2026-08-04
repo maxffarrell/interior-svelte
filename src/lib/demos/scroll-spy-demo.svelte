@@ -1,0 +1,7 @@
+<script lang="ts">
+	import ScrollSpy, { type ScrollSpySection } from '#lib/components/interior/scroll-spy.svelte';
+	const sections: (ScrollSpySection & { lines: string[] })[] = [{ id: 'spy-survey', label: 'Survey', lines: ['The house was measured twice in one afternoon and the two sets of numbers never agreed.', 'A foot short one way, a foot long the other, as though the walls had been shuffled overnight.'] }, { id: 'spy-materials', label: 'Materials', lines: ['Oak on the floors, lime plaster on everything above the rail.', 'Brass where a hand lands often enough to keep it bright.'] }, { id: 'spy-light', label: 'Light', lines: ['In the front room the light comes in low and stays low all afternoon.', 'A room that never fills is a room somebody keeps leaving.'] }, { id: 'spy-schedule', label: 'Schedule', lines: ['Eleven weeks, assuming the stair landing is the only thing sitting half a step out.', 'The plaster wants three dry days in a row.'] }];
+	let box = $state<HTMLElement | null>(null);
+</script>
+
+<div class="mx-auto w-full max-w-[440px]"><ScrollSpy sections={sections} root={box} offset={14} class="mb-3" /><div bind:this={box} role="region" aria-label="Article body" class="mat-well no-bar h-[220px] overflow-y-auto overscroll-contain rounded-[11px] px-3.5 py-3">{#each sections as section}<section class="pb-5 last:pb-0"><h3 id={section.id} class="text-[13px] font-medium text-ink outline-none">{section.label}</h3>{#each section.lines as line}<p class="mt-1.5 text-[12.5px] text-ink-3">{line}</p>{/each}</section>{/each}</div></div>

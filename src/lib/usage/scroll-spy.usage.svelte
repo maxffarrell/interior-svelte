@@ -1,0 +1,1 @@
+<script lang="ts">import ScrollSpy from '#lib/components/interior/scroll-spy.svelte'; const sections = [{ id: 'overview', label: 'Overview' }, { id: 'details', label: 'Details' }];</script><ScrollSpy {sections} />

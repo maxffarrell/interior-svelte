@@ -394,6 +394,24 @@
 			]
 		},
 		{
+			"name": "skeleton-swap",
+			"type": "registry:block",
+			"title": "Skeleton Swap",
+			"description": "Skeleton to content with zero layout shift.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/skeleton-swap.svelte",
+					"type": "registry:component",
+					"target": "interior/skeleton-swap.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
 			"name": "progress-bar",
 			"type": "registry:block",
 			"title": "Progress Bar",
@@ -404,6 +422,114 @@
 					"path": "./src/lib/components/interior/progress-bar.svelte",
 					"type": "registry:component",
 					"target": "interior/progress-bar.svelte"
+				}
+			]
+		},
+		{
+			"name": "load-more",
+			"type": "registry:block",
+			"title": "Load More",
+			"description": "Sentinel that loads before you hit the end.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/load-more.svelte",
+					"type": "registry:component",
+					"target": "interior/load-more.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "streaming-text",
+			"type": "registry:block",
+			"title": "Streaming Text",
+			"description": "Token by token with a caret.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/streaming-text.svelte",
+					"type": "registry:component",
+					"target": "interior/streaming-text.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "task-steps",
+			"type": "registry:block",
+			"title": "Task Steps",
+			"description": "The system narrates its work.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/task-steps.svelte",
+					"type": "registry:component",
+					"target": "interior/task-steps.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "live-activity",
+			"type": "registry:block",
+			"title": "Live Activity",
+			"description": "The system's ongoing work, worn as a small object.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/live-activity.svelte",
+					"type": "registry:component",
+					"target": "interior/live-activity.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "collapsible-banner",
+			"type": "registry:block",
+			"title": "Collapsible Banner",
+			"description": "Folds to its title, or lets go entirely.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/collapsible-banner.svelte",
+					"type": "registry:component",
+					"target": "interior/collapsible-banner.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "presence-avatars",
+			"type": "registry:block",
+			"title": "Presence Avatars",
+			"description": "Join and leave as a layout change.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/presence-avatars.svelte",
+					"type": "registry:component",
+					"target": "interior/presence-avatars.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
 				}
 			]
 		},
@@ -432,6 +558,124 @@
 					"path": "./src/lib/components/interior/new-items-pill.svelte",
 					"type": "registry:component",
 					"target": "interior/new-items-pill.svelte"
+				}
+			]
+		},
+		{
+			"name": "modal",
+			"type": "registry:block",
+			"title": "Modal",
+			"description": "Backdrop, scroll lock, focus trap.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/modal.svelte",
+					"type": "registry:component",
+					"target": "interior/modal.svelte"
+				}
+			]
+		},
+		{
+			"name": "popover",
+			"type": "registry:block",
+			"title": "Popover",
+			"description": "Knows its origin, flips on collision.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/popover.svelte",
+					"type": "registry:component",
+					"target": "interior/popover.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "tooltip-group",
+			"type": "registry:block",
+			"title": "Tooltip Group",
+			"description": "Delayed once, instant after that.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/tooltip-group.svelte",
+					"type": "registry:component",
+					"target": "interior/tooltip-group.svelte"
+				}
+			]
+		},
+		{
+			"name": "command-palette",
+			"type": "registry:block",
+			"title": "Command Palette",
+			"description": "Results reorder as you type.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/command-palette.svelte",
+					"type": "registry:component",
+					"target": "interior/command-palette.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "drawer",
+			"type": "registry:block",
+			"title": "Drawer",
+			"description": "Side panel that keeps its place.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/drawer.svelte",
+					"type": "registry:component",
+					"target": "interior/drawer.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "context-menu",
+			"type": "registry:block",
+			"title": "Context Menu",
+			"description": "Opens from the pointer, not the corner.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/context-menu.svelte",
+					"type": "registry:component",
+					"target": "interior/context-menu.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "dropdown",
+			"type": "registry:block",
+			"title": "Dropdown",
+			"description": "Active highlight travels between items.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/dropdown.svelte",
+					"type": "registry:component",
+					"target": "interior/dropdown.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
 				}
 			]
 		},
@@ -478,6 +722,344 @@
 			]
 		},
 		{
+			"name": "wizard-steps",
+			"type": "registry:block",
+			"title": "Wizard Steps",
+			"description": "Transition knows forward from back.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/wizard-steps.svelte",
+					"type": "registry:component",
+					"target": "interior/wizard-steps.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "pagination",
+			"type": "registry:block",
+			"title": "Pagination",
+			"description": "The window moves, the row does not.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/pagination.svelte",
+					"type": "registry:component",
+					"target": "interior/pagination.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "tree-view",
+			"type": "registry:block",
+			"title": "Tree View",
+			"description": "Disclosure the arrow keys can walk.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/tree-view.svelte",
+					"type": "registry:component",
+					"target": "interior/tree-view.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "sticky-header",
+			"type": "registry:block",
+			"title": "Sticky Header",
+			"description": "Condenses as you go down.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/sticky-header.svelte",
+					"type": "registry:component",
+					"target": "interior/sticky-header.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "reading-progress",
+			"type": "registry:block",
+			"title": "Reading Progress",
+			"description": "How much is left.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/reading-progress.svelte",
+					"type": "registry:component",
+					"target": "interior/reading-progress.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "scroll-spy",
+			"type": "registry:block",
+			"title": "Scroll Spy",
+			"description": "The section you are actually in.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/scroll-spy.svelte",
+					"type": "registry:component",
+					"target": "interior/scroll-spy.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "snap-carousel",
+			"type": "registry:block",
+			"title": "Snap Carousel",
+			"description": "Momentum that lands on a slide.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/snap-carousel.svelte",
+					"type": "registry:component",
+					"target": "interior/snap-carousel.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "hide-on-scroll",
+			"type": "registry:block",
+			"title": "Hide on Scroll",
+			"description": "Toolbar yields to the content.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/hide-on-scroll.svelte",
+					"type": "registry:component",
+					"target": "interior/hide-on-scroll.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "sortable-table",
+			"type": "registry:block",
+			"title": "Sortable Table",
+			"description": "Rows travel to their new order.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/sortable-table.svelte",
+					"type": "registry:component",
+					"target": "interior/sortable-table.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "filter-grid",
+			"type": "registry:block",
+			"title": "Filter Grid",
+			"description": "Filtering rearranges, it does not blink.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/filter-grid.svelte",
+					"type": "registry:component",
+					"target": "interior/filter-grid.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "value-flash",
+			"type": "registry:block",
+			"title": "Value Flash",
+			"description": "Marks what just changed.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/value-flash.svelte",
+					"type": "registry:component",
+					"target": "interior/value-flash.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "poll-results",
+			"type": "registry:block",
+			"title": "Poll Results",
+			"description": "The winner lands last.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/poll-results.svelte",
+					"type": "registry:component",
+					"target": "interior/poll-results.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "slider-detents",
+			"type": "registry:block",
+			"title": "Slider Detents",
+			"description": "Stops you can feel.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/slider-detents.svelte",
+					"type": "registry:component",
+					"target": "interior/slider-detents.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "swipe-deck",
+			"type": "registry:block",
+			"title": "Swipe Deck",
+			"description": "A stack you decide through.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/swipe-deck.svelte",
+					"type": "registry:component",
+					"target": "interior/swipe-deck.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "reorder-list",
+			"type": "registry:block",
+			"title": "Reorder List",
+			"description": "The gap the siblings open is the drop target.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/reorder-list.svelte",
+					"type": "registry:component",
+					"target": "interior/reorder-list.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "long-press",
+			"type": "registry:block",
+			"title": "Long Press",
+			"description": "Intent confirmed by time, and cancelled by everything else.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/long-press.svelte",
+					"type": "registry:component",
+					"target": "interior/long-press.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "lightbox",
+			"type": "registry:block",
+			"title": "Lightbox",
+			"description": "Zoom that returns where it started.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/lightbox.svelte",
+					"type": "registry:component",
+					"target": "interior/lightbox.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
 			"name": "text-reveal",
 			"type": "registry:block",
 			"title": "Text Reveal",
@@ -488,6 +1070,46 @@
 					"path": "./src/lib/components/interior/text-reveal.svelte",
 					"type": "registry:component",
 					"target": "interior/text-reveal.svelte"
+				}
+			]
+		},
+		{
+			"name": "logo-marquee",
+			"type": "registry:block",
+			"title": "Logo Marquee",
+			"description": "Stops when you look at it.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/logo-marquee.svelte",
+					"type": "registry:component",
+					"target": "interior/logo-marquee.svelte"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "blur-up-image",
+			"type": "registry:block",
+			"title": "Blur-up Image",
+			"description": "Placeholder resolves into the photo.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/blur-up-image.svelte",
+					"type": "registry:component",
+					"target": "interior/blur-up-image.svelte"
+				},
+				{
+					"path": "./src/lib/utils.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "./src/lib/reduced-motion.svelte.ts",
+					"type": "registry:lib"
 				}
 			]
 		},

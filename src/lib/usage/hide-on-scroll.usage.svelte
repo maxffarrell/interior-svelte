@@ -1,0 +1,1 @@
+<script lang="ts">import HideOnScroll from '#lib/components/interior/hide-on-scroll.svelte';</script><HideOnScroll label="Content">{#snippet bar()}Toolbar{/snippet}{#snippet children()}<p class="p-4">Scrollable content</p>{/snippet}</HideOnScroll>

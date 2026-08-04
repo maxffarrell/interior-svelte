@@ -1,0 +1,1 @@
+<script lang="ts">import TreeView, { type TreeNode } from '#lib/components/interior/tree-view.svelte'; const nodes: TreeNode[] = [{ id: 'root', label: 'Root', children: [{ id: 'child', label: 'Child' }] }];</script><TreeView {nodes} label="Files" />

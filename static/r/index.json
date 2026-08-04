@@ -143,12 +143,68 @@
 		"relativeUrl": "expanding-search.json"
 	},
 	{
+		"name": "skeleton-swap",
+		"title": "Skeleton Swap",
+		"type": "registry:block",
+		"description": "Skeleton to content with zero layout shift.",
+		"registryDependencies": [],
+		"relativeUrl": "skeleton-swap.json"
+	},
+	{
 		"name": "progress-bar",
 		"title": "Progress Bar",
 		"type": "registry:block",
 		"description": "Indeterminate handing over to determinate.",
 		"registryDependencies": [],
 		"relativeUrl": "progress-bar.json"
+	},
+	{
+		"name": "load-more",
+		"title": "Load More",
+		"type": "registry:block",
+		"description": "Sentinel that loads before you hit the end.",
+		"registryDependencies": [],
+		"relativeUrl": "load-more.json"
+	},
+	{
+		"name": "streaming-text",
+		"title": "Streaming Text",
+		"type": "registry:block",
+		"description": "Token by token with a caret.",
+		"registryDependencies": [],
+		"relativeUrl": "streaming-text.json"
+	},
+	{
+		"name": "task-steps",
+		"title": "Task Steps",
+		"type": "registry:block",
+		"description": "The system narrates its work.",
+		"registryDependencies": [],
+		"relativeUrl": "task-steps.json"
+	},
+	{
+		"name": "live-activity",
+		"title": "Live Activity",
+		"type": "registry:block",
+		"description": "The system's ongoing work, worn as a small object.",
+		"registryDependencies": [],
+		"relativeUrl": "live-activity.json"
+	},
+	{
+		"name": "collapsible-banner",
+		"title": "Collapsible Banner",
+		"type": "registry:block",
+		"description": "Folds to its title, or lets go entirely.",
+		"registryDependencies": [],
+		"relativeUrl": "collapsible-banner.json"
+	},
+	{
+		"name": "presence-avatars",
+		"title": "Presence Avatars",
+		"type": "registry:block",
+		"description": "Join and leave as a layout change.",
+		"registryDependencies": [],
+		"relativeUrl": "presence-avatars.json"
 	},
 	{
 		"name": "typing-indicator",
@@ -165,6 +221,62 @@
 		"description": "New content without stealing your scroll.",
 		"registryDependencies": [],
 		"relativeUrl": "new-items-pill.json"
+	},
+	{
+		"name": "modal",
+		"title": "Modal",
+		"type": "registry:block",
+		"description": "Backdrop, scroll lock, focus trap.",
+		"registryDependencies": [],
+		"relativeUrl": "modal.json"
+	},
+	{
+		"name": "popover",
+		"title": "Popover",
+		"type": "registry:block",
+		"description": "Knows its origin, flips on collision.",
+		"registryDependencies": [],
+		"relativeUrl": "popover.json"
+	},
+	{
+		"name": "tooltip-group",
+		"title": "Tooltip Group",
+		"type": "registry:block",
+		"description": "Delayed once, instant after that.",
+		"registryDependencies": [],
+		"relativeUrl": "tooltip-group.json"
+	},
+	{
+		"name": "command-palette",
+		"title": "Command Palette",
+		"type": "registry:block",
+		"description": "Results reorder as you type.",
+		"registryDependencies": [],
+		"relativeUrl": "command-palette.json"
+	},
+	{
+		"name": "drawer",
+		"title": "Drawer",
+		"type": "registry:block",
+		"description": "Side panel that keeps its place.",
+		"registryDependencies": [],
+		"relativeUrl": "drawer.json"
+	},
+	{
+		"name": "context-menu",
+		"title": "Context Menu",
+		"type": "registry:block",
+		"description": "Opens from the pointer, not the corner.",
+		"registryDependencies": [],
+		"relativeUrl": "context-menu.json"
+	},
+	{
+		"name": "dropdown",
+		"title": "Dropdown",
+		"type": "registry:block",
+		"description": "Active highlight travels between items.",
+		"registryDependencies": [],
+		"relativeUrl": "dropdown.json"
 	},
 	{
 		"name": "tabs",
@@ -191,12 +303,164 @@
 		"relativeUrl": "accordion.json"
 	},
 	{
+		"name": "wizard-steps",
+		"title": "Wizard Steps",
+		"type": "registry:block",
+		"description": "Transition knows forward from back.",
+		"registryDependencies": [],
+		"relativeUrl": "wizard-steps.json"
+	},
+	{
+		"name": "pagination",
+		"title": "Pagination",
+		"type": "registry:block",
+		"description": "The window moves, the row does not.",
+		"registryDependencies": [],
+		"relativeUrl": "pagination.json"
+	},
+	{
+		"name": "tree-view",
+		"title": "Tree View",
+		"type": "registry:block",
+		"description": "Disclosure the arrow keys can walk.",
+		"registryDependencies": [],
+		"relativeUrl": "tree-view.json"
+	},
+	{
+		"name": "sticky-header",
+		"title": "Sticky Header",
+		"type": "registry:block",
+		"description": "Condenses as you go down.",
+		"registryDependencies": [],
+		"relativeUrl": "sticky-header.json"
+	},
+	{
+		"name": "reading-progress",
+		"title": "Reading Progress",
+		"type": "registry:block",
+		"description": "How much is left.",
+		"registryDependencies": [],
+		"relativeUrl": "reading-progress.json"
+	},
+	{
+		"name": "scroll-spy",
+		"title": "Scroll Spy",
+		"type": "registry:block",
+		"description": "The section you are actually in.",
+		"registryDependencies": [],
+		"relativeUrl": "scroll-spy.json"
+	},
+	{
+		"name": "snap-carousel",
+		"title": "Snap Carousel",
+		"type": "registry:block",
+		"description": "Momentum that lands on a slide.",
+		"registryDependencies": [],
+		"relativeUrl": "snap-carousel.json"
+	},
+	{
+		"name": "hide-on-scroll",
+		"title": "Hide on Scroll",
+		"type": "registry:block",
+		"description": "Toolbar yields to the content.",
+		"registryDependencies": [],
+		"relativeUrl": "hide-on-scroll.json"
+	},
+	{
+		"name": "sortable-table",
+		"title": "Sortable Table",
+		"type": "registry:block",
+		"description": "Rows travel to their new order.",
+		"registryDependencies": [],
+		"relativeUrl": "sortable-table.json"
+	},
+	{
+		"name": "filter-grid",
+		"title": "Filter Grid",
+		"type": "registry:block",
+		"description": "Filtering rearranges, it does not blink.",
+		"registryDependencies": [],
+		"relativeUrl": "filter-grid.json"
+	},
+	{
+		"name": "value-flash",
+		"title": "Value Flash",
+		"type": "registry:block",
+		"description": "Marks what just changed.",
+		"registryDependencies": [],
+		"relativeUrl": "value-flash.json"
+	},
+	{
+		"name": "poll-results",
+		"title": "Poll Results",
+		"type": "registry:block",
+		"description": "The winner lands last.",
+		"registryDependencies": [],
+		"relativeUrl": "poll-results.json"
+	},
+	{
+		"name": "slider-detents",
+		"title": "Slider Detents",
+		"type": "registry:block",
+		"description": "Stops you can feel.",
+		"registryDependencies": [],
+		"relativeUrl": "slider-detents.json"
+	},
+	{
+		"name": "swipe-deck",
+		"title": "Swipe Deck",
+		"type": "registry:block",
+		"description": "A stack you decide through.",
+		"registryDependencies": [],
+		"relativeUrl": "swipe-deck.json"
+	},
+	{
+		"name": "reorder-list",
+		"title": "Reorder List",
+		"type": "registry:block",
+		"description": "The gap the siblings open is the drop target.",
+		"registryDependencies": [],
+		"relativeUrl": "reorder-list.json"
+	},
+	{
+		"name": "long-press",
+		"title": "Long Press",
+		"type": "registry:block",
+		"description": "Intent confirmed by time, and cancelled by everything else.",
+		"registryDependencies": [],
+		"relativeUrl": "long-press.json"
+	},
+	{
+		"name": "lightbox",
+		"title": "Lightbox",
+		"type": "registry:block",
+		"description": "Zoom that returns where it started.",
+		"registryDependencies": [],
+		"relativeUrl": "lightbox.json"
+	},
+	{
 		"name": "text-reveal",
 		"title": "Text Reveal",
 		"type": "registry:block",
 		"description": "Words arrive in reading order.",
 		"registryDependencies": [],
 		"relativeUrl": "text-reveal.json"
+	},
+	{
+		"name": "logo-marquee",
+		"title": "Logo Marquee",
+		"type": "registry:block",
+		"description": "Stops when you look at it.",
+		"registryDependencies": [],
+		"relativeUrl": "logo-marquee.json"
+	},
+	{
+		"name": "blur-up-image",
+		"title": "Blur-up Image",
+		"type": "registry:block",
+		"description": "Placeholder resolves into the photo.",
+		"registryDependencies": [],
+		"relativeUrl": "blur-up-image.json"
 	},
 	{
 		"name": "show-more",

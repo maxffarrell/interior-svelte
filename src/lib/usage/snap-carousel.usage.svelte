@@ -1,0 +1,1 @@
+<script lang="ts">import SnapCarousel from '#lib/components/interior/snap-carousel.svelte';</script><SnapCarousel label="Slides" count={3}>{#snippet children(index)}<div class="mat-panel p-6">Slide {index + 1}</div>{/snippet}</SnapCarousel>

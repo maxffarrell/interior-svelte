@@ -1,0 +1,29 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "value-flash",
+	"title": "Value Flash",
+	"type": "registry:block",
+	"description": "Marks what just changed.",
+	"dependencies": [
+		"motion-sv@^0.1.13",
+		"clsx@^2.1.1",
+		"tailwind-merge@^3.6.0"
+	],
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type FlashDirection = 'up' | 'down';\n\texport type Props = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {\n\t\tvalue: number;\n\t\tformat?: (value: number) => string;\n\t\tlabel?: string;\n\t\thold?: number;\n\t\tannounceAfter?: number;\n\t};\n</script>\n\n<script lang=\"ts\">\n\t// @ts-nocheck\n\timport { motion } from 'motion-sv';\n\timport { reducedMotion } from '$LIB$/reduced-motion.svelte';\n\timport { cn } from '$UTILS$';\n\n\tconst CELL = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;\n\tconst ROLL = { type: 'spring', stiffness: 460, damping: 32, mass: 0.55 } as const;\n\tconst POP = { type: 'spring', stiffness: 640, damping: 22, mass: 0.7 } as const;\n\tconst LIFT = { type: 'spring', stiffness: 380, damping: 26, mass: 0.7 } as const;\n\tconst SETTLE = { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 } as const;\n\tconst INSTANT = { duration: 0 } as const;\n\n\tlet {\n\t\tvalue,\n\t\tformat = String,\n\t\tlabel,\n\t\thold = 900,\n\t\tannounceAfter = 700,\n\t\tclass: className,\n\t\t...rest\n\t}: Props = $props();\n\n\tlet previous = $state(value);\n\tlet direction = $state<FlashDirection | null>(null);\n\tlet flashing = $state(false);\n\tlet changeId = $state(0);\n\tlet settled = $state(format(value));\n\tlet timer: ReturnType<typeof setTimeout> | undefined;\n\tlet announceTimer: ReturnType<typeof setTimeout> | undefined;\n\tconst text = $derived(format(value));\n\tconst transition = $derived(reducedMotion.current ? INSTANT : flashing ? LIFT : SETTLE);\n\n\t$effect(() => {\n\t\tif (Object.is(previous, value)) return;\n\t\tconst prior = previous;\n\t\tprevious = value;\n\t\tconst delta = value - prior;\n\t\tif (delta === 0) return;\n\t\tdirection = delta > 0 ? 'up' : 'down';\n\t\tflashing = true;\n\t\tchangeId += 1;\n\t\tif (timer) clearTimeout(timer);\n\t\ttimer = setTimeout(() => (flashing = false), hold);\n\t});\n\n\t$effect(() => {\n\t\tif (announceTimer) clearTimeout(announceTimer);\n\t\tannounceTimer = setTimeout(() => (settled = text), announceAfter);\n\t\treturn () => {\n\t\t\tif (announceTimer) clearTimeout(announceTimer);\n\t\t};\n\t});\n\n\t$effect(() => () => {\n\t\tif (timer) clearTimeout(timer);\n\t});\n</script>\n\n<motion.span {...rest} initial={false} animate={{ scale: reducedMotion.current ? 1 : flashing ? 1.05 : 1 }} transition={transition} class={cn('relative inline-grid grid-flow-col items-center gap-1.5 rounded-[6px] px-1.5 py-[3px] text-[13px] font-medium tabular-nums transition-colors duration-200', flashing && direction === 'up' ? 'text-moss' : flashing && direction === 'down' ? 'text-flag' : 'text-ink-2', className)}>\n\t{#if direction}\n\t\t<motion.span aria-hidden animate={{ opacity: flashing ? 1 : 0 }} transition={reducedMotion.current ? INSTANT : CELL} class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} />\n\t{/if}\n\t<span aria-hidden class=\"relative inline-grid overflow-hidden\">\n\t\t{#key changeId}\n\t\t\t<motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={reducedMotion.current ? INSTANT : ROLL} class=\"col-start-1 row-start-1\">{text}</motion.span>\n\t\t{/key}\n\t</span>\n\t<span aria-hidden class=\"relative grid size-[1em] place-items-center\">\n\t\t{#if flashing && direction}\n\t\t\t<motion.svg viewBox=\"0 0 256 256\" fill=\"currentColor\" initial={{ opacity: 0, scale: reducedMotion.current ? 1 : 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={reducedMotion.current ? INSTANT : POP} class=\"size-[0.68em]\">\n\t\t\t\t{#if direction === 'up'}<path d=\"M128 68 L210 180 H46 Z\" />{:else}<path d=\"M128 188 L46 76 H210 Z\" />{/if}\n\t\t\t</motion.svg>\n\t\t{/if}\n\t</span>\n\t<span class=\"sr-only\" aria-live=\"polite\">{label ? `${label}: ${settled}` : settled}</span>\n</motion.span>\n",
+			"type": "registry:component",
+			"target": "interior/value-flash.svelte"
+		},
+		{
+			"content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\n/**\n * Merge class values, resolving Tailwind conflicts so the last one wins.\n *\n * This is what makes the `class` prop on every component behave the way the\n * registry documents it: \"appended last to the root, so width and spacing are\n * the caller's\". Plain concatenation would leave both `p-2` and the caller's\n * `p-4` in the list and let source order in the stylesheet decide; `twMerge`\n * drops the loser outright.\n *\n * Design-language classes from `layout.css` (`mat-panel`, `press`, `tnum`, …)\n * are not utilities, so `twMerge` passes them through untouched.\n */\nexport function cn(...inputs: ClassValue[]): string {\n\treturn twMerge(clsx(inputs));\n}\n",
+			"type": "registry:lib",
+			"target": "utils.ts"
+		},
+		{
+			"content": "import { MediaQuery } from 'svelte/reactivity';\n\nexport const reducedMotion = new MediaQuery('prefers-reduced-motion: reduce');\n",
+			"type": "registry:lib",
+			"target": "reduced-motion.svelte.ts"
+		}
+	]
+}

@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "tooltip-group",
+	"title": "Tooltip Group",
+	"type": "registry:block",
+	"description": "Delayed once, instant after that.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { Snippet } from 'svelte';\n\texport type Props = { children: Snippet; openDelay?: number; closeDelay?: number; skipDelay?: number; class?: string };\n</script>\n<script lang=\"ts\">\n\tlet { children, class: className = '' }: Props = $props();\n</script>\n<div class={className}>{@render children()}</div>\n",
+			"type": "registry:component",
+			"target": "interior/tooltip-group.svelte"
+		}
+	]
+}

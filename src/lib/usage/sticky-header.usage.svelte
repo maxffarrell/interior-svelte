@@ -1,0 +1,1 @@
+<script lang="ts">import StickyHeader from '#lib/components/interior/sticky-header.svelte';</script><StickyHeader title="Inbox">{#snippet children()}<p class="p-4">Scrollable content</p>{/snippet}</StickyHeader>
