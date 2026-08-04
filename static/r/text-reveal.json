@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "text-reveal",
+	"title": "Text Reveal",
+	"type": "registry:block",
+	"description": "Words arrive in reading order.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type Props = HTMLAttributes<HTMLSpanElement> & { text: string; by?: 'word' | 'character'; stagger?: number };\n</script>\n\n<script lang=\"ts\">\n\tlet { text, by = 'word', stagger = 45, class: className, ...rest }: Props = $props();\n\tlet units = $derived(by === 'character' ? Array.from(text) : text.split(' '));\n</script>\n\n<span {...rest} class=\"{className ?? ''}\">\n\t{#each units as unit, index (index)}<span class=\"reveal-unit\" style:animation-delay={`${index * stagger}ms`}>{unit}{by === 'word' && index < units.length - 1 ? ' ' : ''}</span>{/each}\n</span>\n\n<style>\n\t.reveal-unit { display: inline-block; animation: reveal 600ms cubic-bezier(.23,1,.32,1) both; }\n\t@keyframes reveal { from { opacity: 0; transform: translateY(10px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }\n\t@media (prefers-reduced-motion: reduce) { .reveal-unit { animation: none; } }\n</style>\n",
+			"type": "registry:component",
+			"target": "interior/text-reveal.svelte"
+		}
+	]
+}

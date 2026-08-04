@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "interior-svelte",
-	"account_id": "048291e2d9dddabc88d67fc5e222cfa4",
+	"account_id": "ecb6cf90208469786cff01f71ef0a8cd",
 	"compatibility_date": "2026-08-01",
 	"compatibility_flags": ["nodejs_als"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
@@ -9,6 +9,12 @@
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
 	},
+	"routes": [
+		{
+			"pattern": "interior.spelte.dev",
+			"custom_domain": true
+		}
+	],
 	"workers_dev": true,
 	"preview_urls": true
 }

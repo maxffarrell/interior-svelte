@@ -50,6 +50,42 @@ export type ComponentMeta = {
  * Append as each one lands.
  */
 export const meta: Record<string, ComponentMeta> = {
+	accordion: {
+		export: 'Accordion',
+		props: [],
+		notes: ['Disclosure content with a stable row and keyboard-friendly toggle.']
+	},
+	'progress-bar': {
+		export: 'ProgressBar',
+		props: [],
+		notes: ['Indeterminate progress hands over to determinate progress without changing the track.']
+	},
+	'typing-indicator': {
+		export: 'TypingIndicator',
+		props: [],
+		notes: ['The three-dot pulse remains compact and respects reduced motion.']
+	},
+	'new-items-pill': {
+		export: 'NewItemsPill',
+		props: [],
+		notes: ['New content is announced without stealing the reader’s scroll position.']
+	},
+	tabs: { export: 'Tabs', props: [], notes: ['One active surface is shared across the tab row.'] },
+	'segmented-control': {
+		export: 'SegmentedControl',
+		props: [],
+		notes: ['The active segment inverts in place, keeping the row width stable.']
+	},
+	'text-reveal': {
+		export: 'TextReveal',
+		props: [],
+		notes: ['Words arrive in reading order with a restrained blur and lift.']
+	},
+	'show-more': {
+		export: 'ShowMore',
+		props: [],
+		notes: ['Additional content expands in place rather than teleporting the reader.']
+	},
 	'floating-label': {
 		export: 'FloatingLabel',
 		dependencies: ['motion-sv'],

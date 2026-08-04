@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "typing-indicator",
+	"title": "Typing Indicator",
+	"type": "registry:block",
+	"description": "Someone is writing.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type Props = HTMLAttributes<HTMLDivElement> & { label?: string };\n</script>\n\n<script lang=\"ts\">\n\tlet { label = 'Someone is typing', class: className, ...rest }: Props = $props();\n</script>\n\n<div {...rest} role=\"status\" aria-label={label} class=\"inline-flex items-center gap-2 text-[13px] text-ink-2 {className ?? ''}\">\n\t<span class=\"mat-well inline-flex h-8 items-center gap-1 rounded-[10px] px-3\">\n\t\t{#each [0, 1, 2] as delay}\n\t\t\t<i style:animation-delay={`${delay * 120}ms`}></i>\n\t\t{/each}\n\t</span>\n\t<span class=\"sr-only\">{label}</span>\n</div>\n\n<style>\n\ti { display: block; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .35; animation: pulse 900ms ease-in-out infinite; }\n\t@keyframes pulse { 0%, 100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(-3px); opacity: .9; } }\n\t@media (prefers-reduced-motion: reduce) { i { animation: none; } }\n</style>\n",
+			"type": "registry:component",
+			"target": "interior/typing-indicator.svelte"
+		}
+	]
+}

@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "segmented-control",
+	"title": "Segmented Control",
+	"type": "registry:block",
+	"description": "Thumb slides, label inverts through it.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type Segment = { value: string; label: string };\n\texport type Props = HTMLAttributes<HTMLDivElement> & { items?: Segment[]; value?: string; onChange?: (value: string) => void };\n</script>\n\n<script lang=\"ts\">\n\tlet { items = [{ value: 'week', label: 'Week' }, { value: 'month', label: 'Month' }, { value: 'year', label: 'Year' }], value = $bindable(items[0]?.value ?? ''), onChange, class: className, ...rest }: Props = $props();\n\tfunction select(next: string) { value = next; onChange?.(next); }\n</script>\n\n<div {...rest} class=\"mat-well inline-flex rounded-[10px] p-1 {className ?? ''}\">\n\t{#each items as item (item.value)}\n\t\t<button type=\"button\" onclick={() => select(item.value)} class=\"relative rounded-[7px] px-3 py-1.5 text-[12px] text-ink-3 transition-colors data-[active=true]:text-ink\" data-active={value === item.value}>\n\t\t\t{#if value === item.value}<span class=\"mat-cap absolute inset-0 -z-1 rounded-[7px]\"></span>{/if}<span class=\"relative\">{item.label}</span>\n\t\t</button>\n\t{/each}\n</div>\n",
+			"type": "registry:component",
+			"target": "interior/segmented-control.svelte"
+		}
+	]
+}

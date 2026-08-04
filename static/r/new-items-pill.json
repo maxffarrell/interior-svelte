@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "new-items-pill",
+	"title": "New Items Pill",
+	"type": "registry:block",
+	"description": "New content without stealing your scroll.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLButtonAttributes } from 'svelte/elements';\n\texport type Props = Omit<HTMLButtonAttributes, 'children'> & { count?: number; onReveal?: () => void };\n</script>\n\n<script lang=\"ts\">\n\tlet { count = 3, onReveal, class: className, ...rest }: Props = $props();\n</script>\n\n<button {...rest} type=\"button\" onclick={onReveal} class=\"press mat-cap inline-flex h-8 items-center gap-2 rounded-full px-3 text-[12px] font-medium text-ink-2 {className ?? ''}\">\n\t<span class=\"size-1.5 rounded-full bg-accent\"></span>\n\t{count} new {count === 1 ? 'item' : 'items'}\n\t<span aria-hidden=\"true\" class=\"text-ink-3\">↓</span>\n</button>\n",
+			"type": "registry:component",
+			"target": "interior/new-items-pill.svelte"
+		}
+	]
+}

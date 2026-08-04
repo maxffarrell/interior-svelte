@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { readyEntries } from '../src/lib/registry/index';
 import { meta } from '../src/lib/registry/meta';
 
-const HOMEPAGE = 'https://interior-svelte.max-gottschalk.workers.dev';
+const HOMEPAGE = 'https://interior.spelte.dev';
 const OUT_DIR = 'static/r';
 
 /**

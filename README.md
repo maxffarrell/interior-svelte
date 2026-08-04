@@ -1,35 +1,48 @@
-# sv
+# interior[.]svelte
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Micro-interactions for Svelte, built for the half-second after a click.
 
-## Creating a project
+Everybody builds these components. Almost nobody finishes them. The missing
+twenty percent is always the same three things: a jump, a restart, and an
+animation that ignores the person watching it. This is an unofficial Svelte
+port of [ddoemonn/interior](https://github.com/ddoemonn/interior).
 
-If you're seeing this, you've probably already done this step. Congrats!
+## How it works
 
-```sh
-# create a new project
-npx sv create my-app
-```
+There is no package. Each shipped component is copied into your project from
+[`src/lib/components/interior/`](src/lib/components/interior/). The behavior
+is owned by the component and its adjacent state module, so the file is yours
+to reskin or change after installation.
 
-## Developing
+The docs site is live at [interior.spelte.dev](https://interior.spelte.dev),
+and every currently ready component has a replayable demo, install command, usage
+example, source listing, and prop notes.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+## Development
 
 ```sh
-npm run build
+pnpm install
+pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Validation
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+pnpm check
+pnpm lint
+pnpm test
+pnpm build
+```
+
+## Deployment
+
+The app is a SvelteKit Cloudflare Worker. Production deploys run from `main`
+through GitHub Actions using Wrangler. Wrangler declares the custom domain
+`interior.spelte.dev` in [`wrangler.jsonc`](wrangler.jsonc).
+
+## Design premise
+
+Trust is won in the half-second after a click and lost in exactly the same
+place. Every component reserves the space its states need, keeps motion
+interruptible, gives keyboard input a complete path, and still communicates
+under `prefers-reduced-motion`; only the trip is skipped.

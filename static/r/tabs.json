@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "tabs",
+	"title": "Tabs",
+	"type": "registry:block",
+	"description": "One indicator shared across tabs.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type Tab = { value: string; label: string };\n\texport type Props = HTMLAttributes<HTMLDivElement> & { items?: Tab[]; value?: string; onChange?: (value: string) => void };\n</script>\n\n<script lang=\"ts\">\n\tlet { items = [{ value: 'one', label: 'Overview' }, { value: 'two', label: 'Details' }, { value: 'three', label: 'Activity' }], value = $bindable(items[0]?.value ?? ''), onChange, class: className, ...rest }: Props = $props();\n\tlet active = $derived(items.find((item) => item.value === value)?.value ?? items[0]?.value ?? '');\n\tfunction select(next: string) { value = next; onChange?.(next); }\n</script>\n\n<div {...rest} class=\"grid gap-4 {className ?? ''}\">\n\t<div role=\"tablist\" class=\"mat-well relative flex rounded-[10px] p-1\">\n\t\t{#each items as item (item.value)}\n\t\t\t<button type=\"button\" role=\"tab\" aria-selected={active === item.value} onclick={() => select(item.value)} class=\"relative z-1 flex-1 rounded-[7px] px-3 py-2 text-[12px] text-ink-3 transition-colors data-[active=true]:text-ink\" data-active={active === item.value}>\n\t\t\t\t{#if active === item.value}<span class=\"mat-cap absolute inset-0 -z-1 rounded-[7px]\"></span>{/if}\n\t\t\t\t<span class=\"relative\">{item.label}</span>\n\t\t\t</button>\n\t\t{/each}\n\t</div>\n\t<div class=\"mat-panel rounded-[12px] p-4 text-[13px] leading-relaxed text-ink-2\">{items.find((item) => item.value === active)?.label} content</div>\n</div>\n",
+			"type": "registry:component",
+			"target": "interior/tabs.svelte"
+		}
+	]
+}

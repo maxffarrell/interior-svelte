@@ -1,7 +1,7 @@
 {
 	"$schema": "https://shadcn-svelte.com/schema/registry.json",
 	"name": "interior-svelte",
-	"homepage": "https://interior-svelte.max-gottschalk.workers.dev",
+	"homepage": "https://interior.spelte.dev",
 	"items": [
 		{
 			"name": "copy-button",
@@ -390,6 +390,118 @@
 				{
 					"path": "./src/lib/reduced-motion.svelte.ts",
 					"type": "registry:lib"
+				}
+			]
+		},
+		{
+			"name": "progress-bar",
+			"type": "registry:block",
+			"title": "Progress Bar",
+			"description": "Indeterminate handing over to determinate.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/progress-bar.svelte",
+					"type": "registry:component",
+					"target": "interior/progress-bar.svelte"
+				}
+			]
+		},
+		{
+			"name": "typing-indicator",
+			"type": "registry:block",
+			"title": "Typing Indicator",
+			"description": "Someone is writing.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/typing-indicator.svelte",
+					"type": "registry:component",
+					"target": "interior/typing-indicator.svelte"
+				}
+			]
+		},
+		{
+			"name": "new-items-pill",
+			"type": "registry:block",
+			"title": "New Items Pill",
+			"description": "New content without stealing your scroll.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/new-items-pill.svelte",
+					"type": "registry:component",
+					"target": "interior/new-items-pill.svelte"
+				}
+			]
+		},
+		{
+			"name": "tabs",
+			"type": "registry:block",
+			"title": "Tabs",
+			"description": "One indicator shared across tabs.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/tabs.svelte",
+					"type": "registry:component",
+					"target": "interior/tabs.svelte"
+				}
+			]
+		},
+		{
+			"name": "segmented-control",
+			"type": "registry:block",
+			"title": "Segmented Control",
+			"description": "Thumb slides, label inverts through it.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/segmented-control.svelte",
+					"type": "registry:component",
+					"target": "interior/segmented-control.svelte"
+				}
+			]
+		},
+		{
+			"name": "accordion",
+			"type": "registry:block",
+			"title": "Accordion",
+			"description": "height auto, done correctly.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/accordion.svelte",
+					"type": "registry:component",
+					"target": "interior/accordion.svelte"
+				}
+			]
+		},
+		{
+			"name": "text-reveal",
+			"type": "registry:block",
+			"title": "Text Reveal",
+			"description": "Words arrive in reading order.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/text-reveal.svelte",
+					"type": "registry:component",
+					"target": "interior/text-reveal.svelte"
+				}
+			]
+		},
+		{
+			"name": "show-more",
+			"type": "registry:block",
+			"title": "Show More",
+			"description": "Height animates, text does not reflow.",
+			"registryDependencies": [],
+			"files": [
+				{
+					"path": "./src/lib/components/interior/show-more.svelte",
+					"type": "registry:component",
+					"target": "interior/show-more.svelte"
 				}
 			]
 		}

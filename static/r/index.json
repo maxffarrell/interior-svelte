@@ -141,5 +141,69 @@
 		],
 		"registryDependencies": [],
 		"relativeUrl": "expanding-search.json"
+	},
+	{
+		"name": "progress-bar",
+		"title": "Progress Bar",
+		"type": "registry:block",
+		"description": "Indeterminate handing over to determinate.",
+		"registryDependencies": [],
+		"relativeUrl": "progress-bar.json"
+	},
+	{
+		"name": "typing-indicator",
+		"title": "Typing Indicator",
+		"type": "registry:block",
+		"description": "Someone is writing.",
+		"registryDependencies": [],
+		"relativeUrl": "typing-indicator.json"
+	},
+	{
+		"name": "new-items-pill",
+		"title": "New Items Pill",
+		"type": "registry:block",
+		"description": "New content without stealing your scroll.",
+		"registryDependencies": [],
+		"relativeUrl": "new-items-pill.json"
+	},
+	{
+		"name": "tabs",
+		"title": "Tabs",
+		"type": "registry:block",
+		"description": "One indicator shared across tabs.",
+		"registryDependencies": [],
+		"relativeUrl": "tabs.json"
+	},
+	{
+		"name": "segmented-control",
+		"title": "Segmented Control",
+		"type": "registry:block",
+		"description": "Thumb slides, label inverts through it.",
+		"registryDependencies": [],
+		"relativeUrl": "segmented-control.json"
+	},
+	{
+		"name": "accordion",
+		"title": "Accordion",
+		"type": "registry:block",
+		"description": "height auto, done correctly.",
+		"registryDependencies": [],
+		"relativeUrl": "accordion.json"
+	},
+	{
+		"name": "text-reveal",
+		"title": "Text Reveal",
+		"type": "registry:block",
+		"description": "Words arrive in reading order.",
+		"registryDependencies": [],
+		"relativeUrl": "text-reveal.json"
+	},
+	{
+		"name": "show-more",
+		"title": "Show More",
+		"type": "registry:block",
+		"description": "Height animates, text does not reflow.",
+		"registryDependencies": [],
+		"relativeUrl": "show-more.json"
 	}
 ]

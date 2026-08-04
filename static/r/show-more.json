@@ -1,0 +1,14 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "show-more",
+	"title": "Show More",
+	"type": "registry:block",
+	"description": "Height animates, text does not reflow.",
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\timport type { HTMLAttributes } from 'svelte/elements';\n\texport type Props = HTMLAttributes<HTMLDivElement> & { title?: string; children?: import('svelte').Snippet };\n</script>\n\n<script lang=\"ts\">\n\tlet { title = 'Show more', children, class: className, ...rest }: Props = $props();\n\tlet expanded = $state(false);\n</script>\n\n<div {...rest} class=\"grid gap-3 {className ?? ''}\">\n\t<div class=\"grid transition-[grid-template-rows] duration-300\" style:grid-template-rows={expanded ? '1fr' : '0fr'}>\n\t\t<div class=\"min-h-0 overflow-hidden text-[13px] leading-relaxed text-ink-2\">{@render children?.()}</div>\n\t</div>\n\t<button type=\"button\" class=\"press mat-cap inline-flex h-8 w-fit items-center gap-2 rounded-[9px] px-3 text-[12px] font-medium text-ink-2\" aria-expanded={expanded} onclick={() => (expanded = !expanded)}>{expanded ? 'Show less' : title}<span aria-hidden=\"true\">{expanded ? '↑' : '↓'}</span></button>\n</div>\n",
+			"type": "registry:component",
+			"target": "interior/show-more.svelte"
+		}
+	]
+}
