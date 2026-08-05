@@ -72,19 +72,17 @@
 
 <span class={cn('relative inline-grid grid-flow-col items-center gap-1.5 rounded-[6px] px-1.5 py-[3px] text-[13px] font-medium tabular-nums transition-colors duration-200', flashing && direction === 'up' ? 'text-moss' : flashing && direction === 'down' ? 'text-flag' : 'text-ink-2', className)}>
 	{#if direction}
-		<span aria-hidden="true" class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} in:fade={{ duration: reducedMotion.current ? 0 : 160 }} out:fade={{ duration: reducedMotion.current ? 0 : 160 }} />
+		<span aria-hidden="true" class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} in:fade={{ duration: reducedMotion.current ? 0 : 160 }} out:fade={{ duration: reducedMotion.current ? 0 : 160 }}></span>
 	{/if}
-	<span aria-hidden class="relative inline-grid overflow-hidden">
+	<span aria-hidden="true" class="relative inline-grid overflow-hidden">
 		{#key changeId}<span in:fly={{ y: direction === 'down' ? -14 : 14, duration: reducedMotion.current ? 0 : 180 }} out:fly={{ y: direction === 'down' ? 10 : -10, duration: reducedMotion.current ? 0 : 140 }} class="col-start-1 row-start-1">{text}</span>{/key}
 	</span>
-	<span aria-hidden class="relative grid size-[1em] place-items-center">
-		<AnimatePresence initial={false}>
-			{#if flashing && direction}
+	<span aria-hidden="true" class="relative grid size-[1em] place-items-center">
+		{#if flashing && direction}
 				<svg viewBox="0 0 256 256" fill="currentColor" in:scale={{ start: 0.4, duration: reducedMotion.current ? 0 : 180 }} out:fade={{ duration: reducedMotion.current ? 0 : 140 }} class="col-start-1 row-start-1 block size-[0.68em]">
 					{#if direction === 'up'}<path d="M128 68 L210 180 H46 Z" />{:else}<path d="M128 188 L46 76 H210 Z" />{/if}
 				</svg>
-			{/if}
-		</AnimatePresence>
+		{/if}
 	</span>
 	<span class="sr-only" aria-live="polite">{label ? `${label}: ${settled}` : settled}</span>
 </span>
