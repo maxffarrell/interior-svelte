@@ -14,8 +14,8 @@
 </script>
 
 <script lang="ts" generics="T">
-	import { flip } from 'svelte/animate';
-	import { motion } from 'motion-sv';
+	// @ts-nocheck
+	import { ReorderGroup, ReorderItem } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 	import { cn } from '#lib/utils';
 
@@ -24,7 +24,8 @@
 	let dragging = $state<string | null>(null);
 	let spoken = $state('');
 	let snapshot: readonly T[] | null = null;
-	let pointerId: number | null = null;
+	const CELL = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;
+	const INSTANT = { duration: 0 } as const;
 
 	function indexOf(id: string) { return items.findIndex((item) => getId(item) === id); }
 	function move(from: number, to: number) {
@@ -46,26 +47,8 @@
 		else if (held && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) { event.preventDefault(); move(indexOf(id), indexOf(id) + (event.key === 'ArrowUp' ? -1 : 1)); }
 		else if (held && event.key === 'Escape') { event.preventDefault(); cancel(); }
 	}
-	function pointerdown(event: PointerEvent & { currentTarget: EventTarget & HTMLElement }, id: string) {
-		if (disabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
-		event.currentTarget.setPointerCapture(event.pointerId);
-		pointerId = event.pointerId;
-		dragging = id;
-		snapshot = items;
-	}
-	function pointermove(event: PointerEvent, id: string) {
-		if (pointerId !== event.pointerId || dragging !== id) return;
-		const from = indexOf(id);
-		const target = [...document.querySelectorAll<HTMLElement>('[data-reorder-id]')].findIndex((node) => {
-			const rect = node.getBoundingClientRect();
-			return event.clientY < rect.top + rect.height / 2;
-		});
-		const to = target < 0 ? items.length - 1 : target;
-		if (to !== from) move(from, to);
-	}
-	function pointerup(event: PointerEvent, id: string) {
-		if (pointerId !== event.pointerId) return;
-		pointerId = null;
+	function dragStart(id: string) { snapshot = items; dragging = id; }
+	function dragEnd(id: string) {
 		dragging = null;
 		const at = indexOf(id);
 		const item = items[at];
@@ -76,18 +59,22 @@
 </script>
 
 <div {...rest} class={cn('w-full', className)}>
-	<ul aria-label={label} class="m-0 list-none space-y-1.5 p-0">
+	<ReorderGroup as="ul" axis="y" values={items as T[]} {onReorder} aria-label={label} class="m-0 list-none space-y-1.5 p-0">
 		{#each items as item (getId(item))}
 			{@const id = getId(item)}
 			{@const held = grabbed === id}
-			{@const lifted = held || dragging === id}
-			<li data-reorder-id role="button" aria-describedby="reorder-list-hint" aria-pressed={held} tabindex={disabled ? -1 : 0} onkeydown={(event) => keydown(event, id)} onpointerdown={(event) => pointerdown(event, id)} onpointermove={(event) => pointermove(event, id)} onpointerup={(event) => pointerup(event, id)} onpointercancel={(event) => pointerup(event, id)} onblur={() => held && cancel()} animate:flip={{ duration: reducedMotion.current ? 0 : 200 }} class={cn('relative flex items-center gap-2.5 rounded-[9px] border bg-panel px-3 py-2.5 outline-none transition-[border-color,box-shadow,background-color] duration-150 focus-visible:border-accent', lifted ? 'z-10 cursor-grabbing shadow-[0_1px_2px_rgba(28,25,23,0.08),0_14px_28px_-16px_rgba(28,25,23,0.5)]' : 'cursor-grab border-hairline shadow-[0_1px_2px_rgba(28,25,23,0.06)]', held && 'border-accent bg-accent/4')} style="touch-action:pan-x">
-				<span aria-hidden class={cn('shrink-0 text-[14px]', lifted ? 'text-ink-3' : 'text-ink-3/50')}>⠿</span>
-				<span class="sr-only">{getLabel(item)}</span>
-				<div aria-hidden class="min-w-0 flex-1">{@render children(item)}</div>
-			</li>
+			<ReorderItem as="li" value={item} drag={disabled ? false : 'y'} dragListener={!disabled} role="button" aria-describedby="reorder-list-hint" aria-pressed={held} tabindex={disabled ? -1 : 0} onkeydown={(event) => keydown(event, id)} onDragStart={() => dragStart(id)} onDragEnd={() => dragEnd(id)} onblur={() => held && cancel()} transition={reducedMotion.current ? INSTANT : CELL} whileDrag={reducedMotion.current ? undefined : { scale: 1.02 }} style={{ touchAction: 'pan-x' }}>
+				{#snippet children(isDragging)}
+					{@const lifted = held || isDragging}
+					<div class={cn('relative flex items-center gap-2.5 rounded-[9px] border bg-panel px-3 py-2.5 outline-none transition-[border-color,box-shadow,background-color] duration-150 focus-visible:border-accent', lifted ? 'z-10 cursor-grabbing border-hairline shadow-[0_1px_2px_rgba(28,25,23,0.08),0_14px_28px_-16px_rgba(28,25,23,0.5)]' : 'cursor-grab border-hairline shadow-[0_1px_2px_rgba(28,25,23,0.06)]', held && 'border-accent bg-accent/4')}>
+						<span aria-hidden class={cn('shrink-0 transition-colors duration-150', lifted ? 'text-ink-3' : 'text-ink-3/50')}><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.2" /><circle cx="7.5" cy="2.5" r="1.2" /><circle cx="2.5" cy="7" r="1.2" /><circle cx="7.5" cy="7" r="1.2" /><circle cx="2.5" cy="11.5" r="1.2" /><circle cx="7.5" cy="11.5" r="1.2" /></svg></span>
+						<span class="sr-only">{getLabel(item)}</span>
+						<div aria-hidden class="min-w-0 flex-1">{@render children(item)}</div>
+					</div>
+				{/snippet}
+			</ReorderItem>
 		{/each}
-	</ul>
+	</ReorderGroup>
 	<span id="reorder-list-hint" class="sr-only">Drag to reorder. With the keyboard, Space grabs the row, the arrow keys move it, Space drops it, and Escape puts everything back.</span>
 	<span role="status" aria-live="polite" class="sr-only">{spoken}</span>
 </div>

@@ -35,7 +35,8 @@
 
 	let { items, itemKey, itemLabel, children, onDecide, onUndo, label = 'Card deck', leftLabel = 'Skip', rightLabel = 'Keep', undoLabel = 'Undo', emptyLabel = 'Deck cleared', height = 180, threshold = 92, steps = 6, peek = 3, class: className, ...rest }: Props<T> = $props();
 	let decisions = $state<SwipeChoice[]>([]);
-	let leaving = $state<{ item: T; choice: SwipeChoice } | null>(null);
+	let leaving = $state<{ item: T; choice: SwipeChoice; from: number } | null>(null);
+	let flow = $state<{ dir: -1 | 1; kind: 'decide' | 'undo' }>({ dir: 1, kind: 'decide' });
 	let dragX = useMotionValue(0);
 	const rotate = useTransform(dragX, [-200, 0, 200], [-8, 0, 8], { clamp: false });
 	const opacity = useTransform(dragX, [-340, -150, 0, 150, 340], [0, 1, 1, 1, 0]);
@@ -61,17 +62,21 @@
 		if (done || leaving) return;
 		const item = items[index];
 		if (item === undefined) return;
-		leaving = { item, choice };
+		const from = dragX.get();
+		flow = { dir: choice === 'right' ? 1 : -1, kind: 'decide' };
+		leaving = { item, choice, from };
 		decisions = [...decisions, choice];
 		intent = { dir: 0, step: 0 };
-		dragX.set(choice === 'right' ? 560 : -560);
+		dragX.set(0);
 		onDecide?.(item, choice);
 		setTimeout(() => (leaving = null), reduced ? 0 : 300);
 	}
 
 	function release(dx: number, velocity: number) {
 		held = false;
-		if (Math.abs(dx) >= reach || (Math.abs(velocity) >= 520 && Math.abs(dx) >= reach * 0.35)) decide((dx || velocity) > 0 ? 'right' : 'left');
+		const far = Math.abs(dx) >= reach;
+		const fast = Math.abs(velocity) >= 520 && Math.abs(dx) >= reach * 0.35;
+		if (far || fast) decide((far ? dx : velocity) > 0 ? 'right' : 'left');
 		else {
 			animate(dragX, 0, reduced ? INSTANT : DISCLOSE);
 			intent = { dir: 0, step: 0 };
@@ -109,9 +114,12 @@
 		if (!decisions.length || leaving) return;
 		const item = items[index - 1];
 		if (!item) return;
+		const last = decisions.at(-1)!;
+		flow = { dir: last === 'right' ? 1 : -1, kind: 'undo' };
 		decisions = decisions.slice(0, -1);
 		onUndo?.(item);
-		dragX.set(0);
+		dragX.set(reduced ? 0 : flow.dir * 560);
+		if (!reduced) queueMicrotask(() => animate(dragX, 0, DISCLOSE));
 	}
 	$effect(() => {
 		const bail = () => { held = false; intent = { dir: 0, step: 0 }; animate(dragX, 0, reduced ? INSTANT : DISCLOSE); };
@@ -128,7 +136,10 @@
 			<motion.div aria-hidden={!done} animate={{ opacity: done ? 1 : 0 }} transition={reduced ? INSTANT : CROSSFADE} style="height:{height}px" class="absolute inset-x-5 top-0 z-0 grid place-items-center rounded-[14px] bg-well px-4 text-center text-[12.5px] text-ink-3">{emptyLabel}</motion.div>
 			{#each stack as item, depth (itemKey(item))}
 				{@const active = depth === 0}
-				<div
+				{@const commit = depth === 1 ? intent.step / grain : 0}
+				{@const cardY = depth * 10 - commit * 10}
+				{@const cardScale = 1 - depth * 0.045 + commit * 0.045}
+				<motion.div
 					role="group"
 					aria-label={itemLabel(item)}
 					aria-hidden={!active}
@@ -138,14 +149,17 @@
 					onpointermove={active ? pointermove : undefined}
 					onpointerup={active ? pointerup : undefined}
 					onpointercancel={active ? () => release(0, 0) : undefined}
-					style={active ? undefined : `transform:translateY(${depth * 10}px) scale(${1 - depth * 0.045});z-index:${10 - depth};height:${height}px`}
+					initial={{ y: cardY, scale: cardScale }}
+					animate={{ y: cardY, scale: held && active && !reduced ? 1.03 : cardScale }}
+					transition={reduced ? INSTANT : active ? { ...CROSSFADE, delay: 0.1 } : CROSSFADE}
+					style={`z-index:${10 - depth};height:${height}px;transform-origin:50% 100%;touch-action:pan-y`}
 					class={cn('absolute inset-x-5 top-0 select-none overflow-hidden rounded-[14px] border border-hairline bg-panel', active ? 'z-10 cursor-grab touch-pan-y shadow-[0_1px_2px_rgba(28,25,23,0.06),0_16px_32px_-18px_rgba(28,25,23,0.55)] active:cursor-grabbing' : 'shadow-[0_1px_2px_rgba(28,25,23,0.05),0_6px_14px_-12px_rgba(28,25,23,0.4)]')}
 				>
 					{#if active}<motion.div style={{ x: dragX, rotate, opacity }} animate={{ height }} transition={reduced ? INSTANT : CROSSFADE} class="absolute inset-0 rounded-[14px]">{@render children(item)}</motion.div>{:else}{@render children(item)}{/if}
 					{#if active}<motion.span aria-hidden animate={{ opacity: intent.dir === -1 ? intent.step / grain : 0, scale: intent.dir === -1 ? 1 : 0.94 }} transition={reduced ? INSTANT : CELL} class={cn('pointer-events-none absolute top-3 left-3 whitespace-nowrap rounded-[6px] border bg-panel px-2 py-1 text-[10.5px] font-semibold uppercase tracking-[0.08em]', intent.step >= grain && intent.dir === -1 ? 'border-flag text-flag' : 'border-hairline text-ink-2')}>{leftLabel}</motion.span><motion.span aria-hidden animate={{ opacity: intent.dir === 1 ? intent.step / grain : 0, scale: intent.dir === 1 ? 1 : 0.94 }} transition={reduced ? INSTANT : CELL} class={cn('pointer-events-none absolute top-3 right-3 whitespace-nowrap rounded-[6px] border bg-panel px-2 py-1 text-[10.5px] font-semibold uppercase tracking-[0.08em]', intent.step >= grain && intent.dir === 1 ? 'border-moss text-moss' : 'border-hairline text-ink-2')}>{rightLabel}</motion.span>{/if}
-				</div>
+				</motion.div>
 			{/each}
-			{#if leaving}<motion.div initial={{ x: 0 }} animate={{ x: leaving.choice === 'right' ? 560 : -560 }} transition={reduced ? INSTANT : LEAVE} class="absolute inset-x-5 top-0 z-20 overflow-hidden rounded-[14px] border border-hairline bg-panel" style="height:{height}px">{@render children(leaving.item)}</motion.div>{/if}
+			{#if leaving}<motion.div initial={{ x: leaving.from, rotate: leaving.from / 25, opacity: 1 }} animate={{ x: leaving.choice === 'right' ? 560 : -560, rotate: leaving.choice === 'right' ? 22.4 : -22.4, opacity: 0, borderColor: 'rgba(0,0,0,0)' }} transition={reduced ? INSTANT : { x: LEAVE, rotate: LEAVE, opacity: LEAVE, borderColor: { duration: 0.1, ease: 'linear' } }} class="absolute inset-x-5 top-0 z-20 overflow-hidden rounded-[14px] border border-hairline bg-panel" style="height:{height}px;transform-origin:50% 100%">{@render children(leaving.item)}</motion.div>{/if}
 		</div>
 	</div>
 	<div class="mt-3 grid h-8 grid-cols-[1fr_auto_1fr] items-center gap-3">

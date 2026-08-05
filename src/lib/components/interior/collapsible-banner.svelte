@@ -19,9 +19,15 @@
 	};
 </script>
 
-<script lang="ts">
-	// @ts-nocheck
-	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	<script lang="ts">
+		// @ts-nocheck
+		import { motion } from 'motion-sv';
+		import { reducedMotion } from '#lib/reduced-motion.svelte';
+
+		const EASE = [0.23, 1, 0.32, 1] as const;
+		const DISCLOSE = { type: 'spring', stiffness: 190, damping: 30, mass: 1 } as const;
+		const NUDGE = { type: 'spring', stiffness: 700, damping: 46, mass: 0.5 } as const;
+		const INSTANT = { duration: 0 } as const;
 
 	let {
 		title,
@@ -46,8 +52,17 @@
 	const dismissed = $derived(state === 'dismissed');
 	const hasBody = $derived(Boolean(description || children || action));
 	const id = $props.id();
-	const bodyId = `${id}-body`;
-	const titleId = `${id}-title`;
+		const bodyId = `${id}-body`;
+		const titleId = `${id}-title`;
+		const disclose = $derived(
+			reducedMotion.current
+				? INSTANT
+				: {
+						height: DISCLOSE,
+						opacity: { duration: 0.14, ease: EASE, delay: open ? 0.05 : 0 },
+						y: DISCLOSE
+					}
+		);
 
 	function commit(next: BannerState) {
 		internal = next;
@@ -62,10 +77,15 @@
 	function restore() { commit('open'); }
 </script>
 
-<div
+<motion.div
 	{...rest}
-	class="overflow-hidden rounded-[11px] transition-[max-height,opacity] duration-300 {dismissed ? 'max-h-0 opacity-0' : 'max-h-[600px] opacity-100'}"
-	style:transition-duration={reducedMotion.current ? '0ms' : '300ms'}
+	initial={false}
+	animate={{ height: dismissed ? 0 : 'auto', opacity: dismissed ? 0 : 1 }}
+	transition={reducedMotion.current
+		? INSTANT
+		: { height: DISCLOSE, opacity: { duration: 0.14, ease: EASE } }}
+	style="overflow: hidden"
+	class="rounded-[11px]"
 >
 	<div role="region" aria-labelledby={titleId} class="rounded-[11px] border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_6px_rgba(0,0,0,0.45)] {className ?? ''}">
 		<div class="flex items-center gap-2.5 p-2.5">
@@ -88,7 +108,7 @@
 					class="group flex min-w-0 flex-1 items-center gap-2 rounded-[7px] text-left outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF]"
 				>
 					<span id={titleId} class="min-w-0 flex-1 truncate text-[13px] font-medium leading-5 text-stone-700 dark:text-stone-100">{title}</span>
-					<span aria-hidden="true" class="flex shrink-0 text-stone-400 transition-transform duration-200 group-hover:text-stone-600 dark:text-stone-500 dark:group-hover:text-stone-300" class:rotate-180={open}><svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true"><polyline points="208 96 128 176 48 96" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+					<motion.span aria-hidden="true" class="flex shrink-0 text-stone-400 group-hover:text-stone-600 dark:text-stone-500 dark:group-hover:text-stone-300" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reducedMotion.current ? INSTANT : NUDGE}><svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true"><polyline points="208 96 128 176 48 96" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" /></svg></motion.span>
 				</button>
 			{:else}
 				<span id={titleId} class="min-w-0 flex-1 truncate text-[13px] font-medium leading-5 text-stone-700 dark:text-stone-100">{title}</span>
@@ -100,15 +120,15 @@
 		</div>
 
 		{#if hasBody}
-			<div id={bodyId} inert={!open} class="grid overflow-hidden transition-[grid-template-rows,opacity] duration-300" class:grid-rows-\[1fr\]={open} class:grid-rows-\[0fr\]={!open} class:opacity-100={open} class:opacity-0={!open} style:transition-duration={reducedMotion.current ? '0ms' : '300ms'}>
-				<div class="min-h-0 overflow-hidden pb-2.5 pl-[46px] pr-2.5 transition-transform duration-300" class:translate-y-0={open} class:-translate-y-1.5={!open}>
+			<motion.div id={bodyId} inert={!open} initial={false} animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }} transition={disclose} style="overflow: hidden">
+				<motion.div initial={false} animate={{ y: open ? 0 : -6 }} transition={reducedMotion.current ? INSTANT : DISCLOSE} class="pb-2.5 pl-[46px] pr-2.5">
 					{#if description}<p class="text-[12.5px] leading-relaxed text-stone-500 dark:text-stone-400">{description}</p>{/if}
 					{@render children?.()}
 					{#if action}<div class="mt-2">{@render action()}</div>{/if}
-				</div>
-			</div>
+				</motion.div>
+			</motion.div>
 		{/if}
 	</div>
-</div>
+</motion.div>
 
 <span role="status" aria-live="polite" class="sr-only">{dismissed ? dismissedMessage : ''}</span>

@@ -20,8 +20,9 @@
 
 	const SLOT = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;
 	const FADE = { duration: 0.24, ease: [0.23, 1, 0.32, 1] } as const;
-	const seen = new Map<string, number>();
-	let next = 0;
+		const seen = new Map<string, number>();
+		let next = 0;
+		let imageStates = $state<Record<string, 'loading' | 'loaded' | 'failed'>>({});
 
 	let { people, max = 5, size = 28, overlap = 9, label = 'People here', announceAfter = 900, onOverflowSelect, class: className, ...rest }: Props = $props();
 
@@ -75,8 +76,20 @@
 				>
 					<span class="relative grid size-full place-items-center overflow-hidden rounded-[7px] bg-stone-100 font-medium leading-none text-stone-500 dark:bg-white/10 dark:text-stone-300">
 						{initials(person.name)}
-						{#if person.src}
-							<img src={person.src} alt="" width={size} height={size} decoding="async" class="absolute inset-0 size-full object-cover transition-opacity duration-200" loading="lazy" />
+						{#if person.src && imageStates[person.id] !== 'failed'}
+							<motion.img
+								src={person.src}
+								alt=""
+								width={size}
+								height={size}
+								decoding="async"
+								onload={() => (imageStates[person.id] = 'loaded')}
+								onerror={() => (imageStates[person.id] = 'failed')}
+								initial={false}
+								animate={{ opacity: imageStates[person.id] === 'loaded' ? 1 : 0 }}
+								transition={reducedMotion.current ? { duration: 0 } : FADE}
+								class="absolute inset-0 size-full object-cover"
+							/>
 						{/if}
 					</span>
 				</motion.span>
@@ -86,7 +99,7 @@
 				{#if onOverflowSelect}
 					<motion.button type="button" onclick={() => onOverflowSelect?.(hidden)} aria-label={`Show ${overflow} more`} style={`width: ${chip}px; height: ${size}px; z-index: 0;`} initial={{ opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: 1, x: visible.length * step }} exit={{ opacity: 0, scale: 0.86 }} transition={reducedMotion.current ? { duration: 0 } : SLOT} class="absolute top-0 left-0 grid place-items-center rounded-[9px] border border-stone-200 bg-white font-mono text-[10.5px] leading-none tabular-nums text-stone-500 outline-none ring-2 ring-white focus-visible:border-[#4568FF] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:ring-stone-900 dark:focus-visible:border-[#93B0FF]"><span aria-hidden="true">+{Math.min(overflow, 99)}</span></motion.button>
 				{:else}
-					<motion.span aria-hidden="true" style={`width: ${chip}px; height: ${size}px; z-index: 0;`} initial={{ opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: 1, x: visible.length * step }} exit={{ opacity: 0, scale: 0.86 }} transition={reducedMotion.current ? { duration: 0 } : SLOT} class="absolute top-0 left-0 grid place-items-center rounded-[9px] border border-stone-200 bg-white font-mono text-[10.5px] leading-none tabular-nums text-stone-500 outline-none ring-2 ring-white dark:border-white/[0.16] dark:bg-stone-900 dark:text-stone-400 dark:ring-stone-900">+{Math.min(overflow, 99)}</motion.span>
+					<motion.span aria-hidden="true" style={`width: ${chip}px; height: ${size}px; z-index: 0;`} initial={{ opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: 1, x: visible.length * step }} exit={{ opacity: 0, scale: 0.86 }} transition={reducedMotion.current ? { duration: 0 } : SLOT} class="absolute top-0 left-0 grid place-items-center rounded-[9px] border border-stone-200 bg-white font-mono text-[10.5px] leading-none tabular-nums text-stone-500 outline-none ring-2 ring-white dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:text-stone-400 dark:ring-stone-900">+{Math.min(overflow, 99)}</motion.span>
 				{/if}
 			{/if}
 		</AnimatePresence>

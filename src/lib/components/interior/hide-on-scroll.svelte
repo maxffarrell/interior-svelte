@@ -17,7 +17,11 @@
 </script>
 
 <script lang="ts">
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	const DISCLOSE = { type: 'spring', stiffness: 150, damping: 27, mass: 1 } as const;
+	const CROSSFADE = { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 } as const;
+	const INSTANT = { duration: 0 } as const;
 
 	let {
 		bar,
@@ -41,12 +45,11 @@
 	let frame = 0;
 	let last = 0;
 	let accum = 0;
+	let seenHidden = false;
 	const held = $derived(pinned || focusWithin);
 	const down = $derived(Math.max(1, hideAfter));
 	const up = $derived(Math.max(1, revealAfter));
 	const guard = $derived(Math.max(0, topGuard));
-	const slideTransition = $derived(reducedMotion.current ? 'none' : 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)');
-	const fadeTransition = $derived(reducedMotion.current ? 'none' : 'opacity 260ms cubic-bezier(0.23, 1, 0.32, 1)');
 
 	$effect(() => {
 		const el = scroller;
@@ -106,21 +109,26 @@
 	});
 
 	$effect(() => {
+		if (seenHidden === hidden) return;
+		seenHidden = hidden;
 		onHiddenChange?.(hidden);
 	});
 </script>
 
-<div class="relative w-full min-w-0 overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_1px_6px_rgba(0,0,0,0.45)] {className ?? ''}" {...rest} onfocusin={() => (focusWithin = true)} onfocusout={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) focusWithin = false; }}>
-	<div
+<div class="relative w-full min-w-0 overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_1px_6px_rgba(0,0,0,0.45)] {className ?? ''}" {...rest}>
+	<motion.div
 		data-hidden={hidden ? 'true' : 'false'}
-		style:height={`${barHeight}px`}
-		style:transform={`translateY(${hidden ? -barHeight : 0}px)`}
-		style:transition={slideTransition}
+		style={{ height: barHeight }}
+		initial={false}
+		animate={{ y: hidden ? -barHeight : 0 }}
+		transition={reducedMotion.current ? INSTANT : DISCLOSE}
+		onfocusin={() => (focusWithin = true)}
+		onfocusout={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) focusWithin = false; }}
 		class="absolute inset-x-0 top-0 z-10 flex items-center gap-2 bg-white px-3 dark:bg-[#1D1D1A]"
 	>
 		{@render bar()}
-		<span aria-hidden="true" style:opacity={atTop ? '0' : '1'} style:transition={fadeTransition} class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-stone-200 dark:bg-white/[0.16]"></span>
-	</div>
+		<motion.span aria-hidden="true" initial={false} animate={{ opacity: atTop ? 0 : 1 }} transition={reducedMotion.current ? INSTANT : CROSSFADE} class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-stone-200 dark:bg-white/[0.16]"></motion.span>
+	</motion.div>
 	<div
 		bind:this={scroller}
 		tabindex="0"

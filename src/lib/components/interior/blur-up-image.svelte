@@ -54,6 +54,8 @@
 	let instant = $state(false);
 
 	$effect(() => {
+		// Track srcSet changes as well as src so responsive-source swaps reset state.
+		void srcSet;
 		const img = image;
 		if (!img || !src) {
 			status = 'loading';

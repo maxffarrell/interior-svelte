@@ -12,7 +12,9 @@
 </script>
 
 <script lang="ts">
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	const CELL = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;
 
 	let {
 		sections,
@@ -28,6 +30,17 @@
 	let announce = $state('');
 	let chips = $state<Record<string, HTMLElement | undefined>>({});
 	let announceTimer: ReturnType<typeof setTimeout> | undefined;
+	let programmaticLock = $state<string | null>(null);
+	let programmaticRelease: ReturnType<typeof setTimeout> | undefined;
+	let started = false;
+	let resync = () => {};
+	const thumbId = $props.id();
+
+	function releaseLock() {
+		programmaticLock = null;
+		if (programmaticRelease) clearTimeout(programmaticRelease);
+		programmaticRelease = undefined;
+	}
 
 	function measure(container: HTMLElement | null) {
 		if (sections.length === 0) return '';
@@ -55,22 +68,21 @@
 		const container = root;
 		const source: EventTarget = container ?? window;
 		let frame = 0;
-		let lock: string | null = null;
-		let releaseTimer: ReturnType<typeof setTimeout> | undefined;
 		const sync = () => {
 			if (frame) return;
 			frame = requestAnimationFrame(() => {
 				frame = 0;
 				const next = measure(container);
 				if (!next) return;
-				if (lock) {
-					if (lock === next) lock = null;
+				if (programmaticLock) {
+					if (programmaticLock === next) releaseLock();
 					return;
 				}
 				if (next !== activeId) activeId = next;
 			});
 		};
-		const abandon = () => { lock = null; if (releaseTimer) clearTimeout(releaseTimer); };
+		resync = sync;
+		const abandon = () => { if (programmaticLock) releaseLock(); };
 		source.addEventListener('scroll', sync, { passive: true });
 		window.addEventListener('resize', sync);
 		window.addEventListener('wheel', abandon, { passive: true });
@@ -89,13 +101,19 @@
 			window.removeEventListener('touchstart', abandon);
 			observer?.disconnect();
 			if (frame) cancelAnimationFrame(frame);
-			if (releaseTimer) clearTimeout(releaseTimer);
+			if (programmaticRelease) clearTimeout(programmaticRelease);
+			resync = () => {};
 		};
 	});
 
 	$effect(() => {
 		if (!activeId) return;
 		onChange?.(activeId);
+		if (!started) {
+			started = true;
+			chips[activeId]?.scrollIntoView({ behavior: reducedMotion.current ? 'auto' : 'smooth', block: 'nearest', inline: 'nearest' });
+			return;
+		}
 		announceTimer = setTimeout(() => {
 			announce = sections.find((section) => section.id === activeId)?.label ?? '';
 		}, 420);
@@ -107,6 +125,13 @@
 		const node = document.getElementById(id);
 		if (!node) return;
 		activeId = id;
+		programmaticLock = id;
+		if (programmaticRelease) clearTimeout(programmaticRelease);
+		programmaticRelease = setTimeout(() => {
+			programmaticLock = null;
+			programmaticRelease = undefined;
+			resync();
+		}, 900);
 		const container = root;
 		const rect = node.getBoundingClientRect();
 		const viewport = container ? container.clientHeight : window.innerHeight;
@@ -127,7 +152,7 @@
 			{#each sections as section (section.id)}
 				{@const active = section.id === activeId}
 				<li bind:this={chips[section.id]} class="relative flex-[1_0_auto]">
-					{#if active}<span aria-hidden="true" class="absolute inset-0 rounded-[6px] bg-stone-800 dark:bg-stone-100"></span>{/if}
+					{#if active}<motion.span layoutId={reducedMotion.current ? undefined : thumbId} aria-hidden="true" transition={CELL} class="absolute inset-0 rounded-[6px] bg-stone-800 dark:bg-stone-100"></motion.span>{/if}
 					<a
 						href={`#${section.id}`}
 						aria-current={active ? 'location' : undefined}
@@ -136,7 +161,7 @@
 							event.preventDefault();
 							scrollTo(section.id);
 						}}
-						class="group relative flex h-7 w-full items-center justify-center rounded-[6px] px-2.5 text-[12.5px] outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF]"
+						class="group relative flex h-7 w-full items-center justify-center rounded-[6px] px-2.5 text-[12.5px] outline-none after:pointer-events-none after:absolute after:inset-0 after:rounded-[6px] focus-visible:after:bg-[#4568FF]/[0.06] focus-visible:after:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:after:bg-[#93B0FF]/[0.1] dark:focus-visible:after:shadow-[inset_0_0_0_1px_#93B0FF]"
 					>
 						<span class="relative grid">
 							<span aria-hidden="true" class="invisible col-start-1 row-start-1 whitespace-nowrap font-medium">{section.label}</span>

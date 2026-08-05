@@ -51,7 +51,11 @@
 </script>
 
 <script lang="ts">
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	const CELL = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;
+	const ROLL = { duration: 0.18, ease: [0.23, 1, 0.32, 1] } as const;
+	const STILL = { duration: 0 } as const;
 
 	let {
 		count,
@@ -105,22 +109,23 @@
 			aria-label="Previous page"
 			aria-disabled={!canPrev}
 			onclick={() => canPrev && goTo(current - 1)}
-			class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] text-stone-500 outline-none transition-colors duration-150 hover:bg-stone-100 hover:text-stone-800 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] disabled:text-stone-300 dark:text-stone-400 dark:hover:bg-white/[0.06] dark:hover:text-stone-200 dark:disabled:text-white/20"
+			class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] outline-none transition-colors duration-150 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] {canPrev ? 'text-stone-500 hover:bg-stone-100 hover:text-stone-800 dark:text-stone-400 dark:hover:bg-white/[0.06] dark:hover:text-stone-200' : 'text-stone-300 dark:text-white/20'}"
 		>
 			<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" class="-scale-x-100">
 				<path d="M4.75 2.75 8 6l-3.25 3.25" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
 			</svg>
 		</button>
 		<div class="relative">
-			<span
+			<motion.span
 				aria-hidden="true"
 				class="absolute inset-y-0 left-0 rounded-[9px] bg-stone-800 dark:bg-stone-100"
-				style:width={`${slot}px`}
-				style:transform={`translateX(${thumbIndex * (slot + 4)}px)`}
-				style:transition={reducedMotion.current ? 'none' : 'transform 520ms cubic-bezier(0.23, 1, 0.32, 1)'}
-			></span>
+				style={{ width: slot }}
+				initial={false}
+				animate={{ x: thumbIndex * (slot + 4) }}
+				transition={reducedMotion.current ? STILL : CELL}
+			></motion.span>
 			<ol class="relative flex gap-1">
-				{#each items as item, index (`${item}-${index}`)}
+				{#each items as item (item)}
 					{#if typeof item !== 'number'}
 						<li aria-hidden="true" style:width={`${slot}px`} class="flex h-8 items-center justify-center text-[12.5px] text-stone-400 dark:text-stone-500">&hellip;</li>
 					{:else}
@@ -132,7 +137,7 @@
 								onclick={() => goTo(item)}
 								class="flex h-8 w-full items-center justify-center rounded-[9px] text-[12.5px] tabular-nums outline-none transition-colors duration-150 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] {item === current ? 'font-medium text-white dark:text-stone-900' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-800 dark:text-stone-400 dark:hover:bg-white/[0.06] dark:hover:text-stone-200'}"
 							>
-								<span class:page-roll={!reducedMotion.current} data-direction={direction}>{item}</span>
+								<motion.span initial={reducedMotion.current ? false : { opacity: 0, x: 8 * direction }} animate={{ opacity: 1, x: 0 }} transition={reducedMotion.current ? STILL : ROLL}>{item}</motion.span>
 							</button>
 						</li>
 					{/if}
@@ -144,18 +149,10 @@
 			aria-label="Next page"
 			aria-disabled={!canNext}
 			onclick={() => canNext && goTo(current + 1)}
-			class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] text-stone-500 outline-none transition-colors duration-150 hover:bg-stone-100 hover:text-stone-800 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] disabled:text-stone-300 dark:text-stone-400 dark:hover:bg-white/[0.06] dark:hover:text-stone-200 dark:disabled:text-white/20"
+			class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] outline-none transition-colors duration-150 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] {canNext ? 'text-stone-500 hover:bg-stone-100 hover:text-stone-800 dark:text-stone-400 dark:hover:bg-white/[0.06] dark:hover:text-stone-200' : 'text-stone-300 dark:text-white/20'}"
 		>
 			<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M4.75 2.75 8 6l-3.25 3.25" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
 		</button>
 	</div>
 	<span role="status" class="sr-only">{spoken}</span>
 </nav>
-
-<style>
-	.page-roll { animation: page-roll 180ms cubic-bezier(0.23, 1, 0.32, 1); }
-	@keyframes page-roll { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
-	[data-direction='-1'].page-roll { animation-name: page-roll-back; }
-	@keyframes page-roll-back { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
-	@media (prefers-reduced-motion: reduce) { .page-roll { animation: none; } }
-</style>

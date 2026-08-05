@@ -28,7 +28,12 @@
 </script>
 
 <script lang="ts">
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	const FILL = { type: 'spring', stiffness: 210, damping: 34, mass: 0.9 } as const;
+	const CROSSFADE = { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 } as const;
+	const DRAW = { duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: 0.08 } as const;
+	const INSTANT = { duration: 0 } as const;
 
 	let {
 		target = null,
@@ -51,7 +56,6 @@
 	const minutesLeft = $derived(words > 0 ? Math.ceil(((1 - progress) * words) / wordsPerMinute) : 0);
 	const complete = $derived(step >= steps);
 	const estimate = $derived(words > 0);
-	const transition = $derived(reducedMotion.current ? 'none' : 'transform 210ms cubic-bezier(0.23, 1, 0.32, 1)');
 
 	$effect(() => {
 		const scrollEl = scroller;
@@ -112,16 +116,16 @@
 		aria-valuetext={estimate ? `${percent}% read, ${minutesLeft} min left` : `${percent}% read`}
 		class="min-w-0 flex-1 rounded-[4px] bg-stone-100 p-[2px] shadow-[inset_0_1px_2px_rgba(28,25,23,0.07)] dark:bg-[#1D1D1A] dark:shadow-[inset_0_1px_2px_rgba(0,0,0,0.45)]"
 	>
-		<div class="h-[3px] origin-left rounded-[2px] bg-[#4568FF] dark:bg-[#93B0FF]" style:transform={`scaleX(${progress})`} style:transition={transition}></div>
+		<motion.div class="h-[3px] origin-left rounded-[2px] bg-[#4568FF] dark:bg-[#93B0FF]" style={{ width: '100%' }} initial={false} animate={{ scaleX: step / Math.max(1, steps) }} transition={reducedMotion.current ? INSTANT : FILL}></motion.div>
 	</div>
 	{#if estimate}
 		<div class="grid shrink-0 justify-items-end font-mono text-[10.5px] tabular-nums">
-			<span aria-hidden="true" class="invisible col-start-1 row-start-1 whitespace-nowrap">{doneLabel} · {totalMinutes} min</span>
-			<span aria-hidden="true" class="col-start-1 row-start-1 whitespace-nowrap text-stone-500 transition-opacity duration-250 dark:text-stone-400" style:opacity={complete ? '0' : '1'}>{minutesLeft} min left</span>
-			<span aria-hidden="true" class="col-start-1 row-start-1 flex items-center gap-1 whitespace-nowrap text-stone-700 transition-opacity duration-250 dark:text-stone-200" style:opacity={complete ? '1' : '0'}>
-				<svg width="12" height="12" viewBox="0 0 256 256" fill="none" aria-hidden="true"><polyline points="216 72 104 184 48 128" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" /></svg>
-				{doneLabel} · {totalMinutes} min
-			</span>
+			<span aria-hidden="true" class="invisible col-start-1 row-start-1 flex items-center gap-1 whitespace-nowrap"><span class="w-3 shrink-0"></span>{doneLabel} · {totalMinutes} min</span>
+			<motion.span aria-hidden="true" class="col-start-1 row-start-1 whitespace-nowrap text-stone-500 dark:text-stone-400" initial={false} animate={{ opacity: complete ? 0 : 1 }} transition={reducedMotion.current ? INSTANT : CROSSFADE}>{minutesLeft} min left</motion.span>
+			<motion.span aria-hidden="true" class="col-start-1 row-start-1 flex items-center gap-1 whitespace-nowrap text-stone-700 dark:text-stone-200" initial={false} animate={{ opacity: complete ? 1 : 0 }} transition={reducedMotion.current ? INSTANT : CROSSFADE}>
+				<svg width="12" height="12" viewBox="0 0 256 256" fill="none" aria-hidden="true"><motion.polyline points="216 72 104 184 48 128" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" initial={false} animate={{ pathLength: complete ? 1 : 0 }} transition={reducedMotion.current ? INSTANT : DRAW}></motion.polyline></svg>
+				<motion.span initial={false} animate={{ x: complete ? 0 : 4 }} transition={reducedMotion.current ? INSTANT : CROSSFADE}>{doneLabel} · {totalMinutes} min</motion.span>
+			</motion.span>
 		</div>
 	{/if}
 </div>

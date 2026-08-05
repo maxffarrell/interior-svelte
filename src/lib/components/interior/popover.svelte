@@ -67,8 +67,10 @@
 
 	function clamp(value: number, min: number, max: number) { return Math.min(Math.max(value, min), Math.max(min, max)); }
 
-	function update() {
-		if (!anchor || !floating || !panel) return;
+		function update() {
+			if (!anchor || !floating || !panel) return;
+			panel.style.maxWidth = '';
+			if (content) content.style.maxHeight = '';
 		const a = anchor.getBoundingClientRect();
 		const b = boundary?.getBoundingClientRect();
 		const vw = document.documentElement.clientWidth;
@@ -94,14 +96,17 @@
 		let y = horizontal ? (next === 'top' ? a.top - offset - h : a.bottom + offset) : (align === 'start' ? a.top : align === 'end' ? a.bottom - h : a.top + (a.height - h) / 2);
 		x = clamp(x, left, right - w);
 		y = clamp(y, top, bottom - h);
-		floating.style.left = `${Math.round(x)}px`;
-		floating.style.top = `${Math.round(y)}px`;
+			const base = floating.getBoundingClientRect();
+			const originX = base.left - (parseFloat(floating.style.left) || 0);
+			const originY = base.top - (parseFloat(floating.style.top) || 0);
+			floating.style.left = `${Math.round(x - originX)}px`;
+			floating.style.top = `${Math.round(y - originY)}px`;
 		const half = arrowSize / 2;
 		const point = horizontal ? clamp(a.left + a.width / 2 - x, 11 + half, w - 11 - half) : clamp(a.top + a.height / 2 - y, 11 + half, h - 11 - half);
-		panel.style.transformOrigin = horizontal ? `${point}px ${next === 'top' ? h : 0}px` : `${next === 'left' ? w : 0}px ${point}px`;
-		if (arrow) {
-			if (horizontal) { arrow.style.left = `${point - half}px`; arrow.style.top = `${next === 'top' ? h - half : -half}px`; }
-			else { arrow.style.top = `${point - half}px`; arrow.style.left = `${next === 'left' ? w - half : -half}px`; }
+			panel.style.transformOrigin = horizontal ? `${Math.round(point)}px ${next === 'top' ? h : 0}px` : `${next === 'left' ? w : 0}px ${Math.round(point)}px`;
+			if (arrow) {
+				if (horizontal) { arrow.style.left = `${Math.round(point - half)}px`; arrow.style.top = `${Math.round(next === 'top' ? h - half : -half)}px`; }
+				else { arrow.style.top = `${Math.round(point - half)}px`; arrow.style.left = `${Math.round(next === 'left' ? w - half : -half)}px`; }
 		}
 		resolved = next;
 	}
@@ -109,13 +114,14 @@
 	$effect(() => {
 		if (!isOpen) return;
 		const frame = requestAnimationFrame(update);
-		const schedule = () => requestAnimationFrame(update);
+			let scheduled = 0;
+			const schedule = () => { if (!scheduled) scheduled = requestAnimationFrame(() => { scheduled = 0; update(); }); };
 		const observer = new ResizeObserver(schedule);
 		if (anchor) observer.observe(anchor);
 		if (content) observer.observe(content);
 		window.addEventListener('resize', schedule);
 		window.addEventListener('scroll', schedule, true);
-		return () => { cancelAnimationFrame(frame); observer.disconnect(); window.removeEventListener('resize', schedule); window.removeEventListener('scroll', schedule, true); };
+			return () => { cancelAnimationFrame(frame); cancelAnimationFrame(scheduled); observer.disconnect(); window.removeEventListener('resize', schedule); window.removeEventListener('scroll', schedule, true); };
 	});
 
 	$effect(() => {
@@ -136,7 +142,7 @@
 <AnimatePresence>
 	{#if isOpen}
 		<div bind:this={floating} class="fixed left-0 top-0 z-50" onblur={(event) => { const next = event.relatedTarget as Node | null; if (next && !panel?.contains(next) && !anchor?.contains(next)) setOpen(false); }}>
-			<motion.div bind:this={panel} id={id} role="dialog" aria-label={label} tabindex="-1" initial={reducedMotion.current ? { opacity: 0 } : { opacity: 0, scale: 0.95, ...FROM[resolved] }} animate={{ opacity: 1, scale: 1, x: 0, y: 0 }} exit={reducedMotion.current ? { opacity: 0 } : { opacity: 0, scale: 0.97, transition: { duration: 0.13, ease: EASE } }} transition={reducedMotion.current ? { duration: 0 } : { ...CROSSFADE, opacity: { duration: 0.14, ease: EASE } }} class="relative rounded-[11px] border border-stone-200 bg-white p-3 shadow-[0_18px_40px_-24px_rgba(28,25,23,0.5)] focus-visible:outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] {className}">
+			<motion.div bind:this={panel} id={id} role="dialog" aria-label={label} tabindex="-1" initial={reducedMotion.current ? { opacity: 0 } : { opacity: 0, scale: 0.95, ...FROM[resolved] }} animate={{ opacity: 1, scale: 1, x: 0, y: 0 }} exit={reducedMotion.current ? { opacity: 0, transition: { duration: 0.1 } } : { opacity: 0, scale: 0.97, transition: { duration: 0.13, ease: EASE } }} transition={reducedMotion.current ? { duration: 0 } : { ...CROSSFADE, opacity: { duration: 0.14, ease: EASE } }} class="relative rounded-[11px] border border-stone-200 bg-white p-3 shadow-[0_18px_40px_-24px_rgba(28,25,23,0.5)] focus-visible:outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] {className}">
 				<span bind:this={arrow} aria-hidden style:width={arrowSize + 'px'} style:height={arrowSize + 'px'} class="absolute block rotate-45 bg-white dark:bg-[#1D1D1A] {ARROW[resolved]}" />
 				<div bind:this={content} class="relative overflow-y-auto overscroll-contain">{@render children()}</div>
 			</motion.div>

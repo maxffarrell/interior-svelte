@@ -139,8 +139,8 @@
 				aria-label={done ? `Replay ${label}` : 'Skip to the end'}
 				class="inline-grid h-7 place-items-center rounded-[6px] border border-stone-200 px-2.5 text-[11.5px] font-medium text-stone-500 transition-colors duration-150 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 dark:border-white/[0.16] dark:text-stone-400 dark:hover:text-stone-200 dark:focus-visible:ring-stone-500"
 			>
-				<span class="col-start-1 row-start-1 transition-[opacity,transform,filter] duration-200" style:opacity={done ? 0 : 1} style:transform={done ? 'translateY(3px)' : 'translateY(0)'}>Skip</span>
-				<span class="col-start-1 row-start-1 transition-[opacity,transform,filter] duration-200" style:opacity={done ? 1 : 0} style:transform={done ? 'translateY(0)' : 'translateY(3px)'}>Replay</span>
+				<motion.span class="col-start-1 row-start-1" animate={done ? { opacity: 0, y: 3, filter: 'blur(3px)' } : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={reducedMotion.current ? { duration: 0 } : CROSSFADE}>Skip</motion.span>
+				<motion.span class="col-start-1 row-start-1" animate={done ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 3, filter: 'blur(3px)' }} transition={reducedMotion.current ? { duration: 0 } : CROSSFADE}>Replay</motion.span>
 			</button>
 		</div>
 	{/if}

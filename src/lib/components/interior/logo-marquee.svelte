@@ -119,6 +119,12 @@
 		return () => viewport?.removeEventListener('scroll', pin);
 	});
 
+	$effect(() => {
+		const release = () => (held = false);
+		window.addEventListener('blur', release);
+		return () => window.removeEventListener('blur', release);
+	});
+
 	function reveal(node: HTMLElement) {
 		if (!viewport || reducedMotion.current || span <= 0 || node === viewport) return;
 		const view = viewport.getBoundingClientRect();

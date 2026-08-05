@@ -53,7 +53,13 @@
 </script>
 
 <script lang="ts" generics="T">
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
+	const CELL = { type: 'spring', stiffness: 520, damping: 34, mass: 0.45 } as const;
+	const SMALL = { type: 'spring', stiffness: 700, damping: 46, mass: 0.5 } as const;
+	const HIDE = { duration: 0.12, ease: [0.4, 0, 1, 1] } as const;
+	const SHOW = { duration: 0.25, ease: [0.23, 1, 0.32, 1] } as const;
+	const INSTANT = { duration: 0 } as const;
 
 	let {
 		rows,
@@ -111,13 +117,15 @@
 		marked = marked === id ? null : id;
 		onMarkChange?.(marked);
 	}
+
+	$effect(() => () => clearTimeout(settleTimer));
 </script>
 
 <div class="overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_1px_6px_rgba(0,0,0,0.45)] {className ?? ''}" {...rest}>
 	<div role="table" aria-label={label} aria-rowcount={rows.length + 1} aria-colcount={columns.length + (markable ? 1 : 0)}>
 		<div role="rowgroup">
 			<div role="row" aria-rowindex="1" class="grid h-9 items-center gap-x-2 border-b border-stone-200 px-2 dark:border-white/[0.16]" style={`grid-template-columns:${template}`}>
-				{#if markable}<div role="columnheader"><span class="sr-only">Follow</span></div>{/if}
+				{#if markable}<div role="columnheader" class="min-w-0"><span class="sr-only">Follow</span></div>{/if}
 				{#each columns as column (column.id)}
 					{@const state = ariaSort(column.id)}
 					{@const active = state !== 'none'}
@@ -125,34 +133,32 @@
 						{#if column.sortable === false}
 							<span class="block truncate px-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-stone-500 dark:text-stone-400 {column.align === 'end' ? 'text-right' : ''}">{column.header}</span>
 						{:else}
-							<button type="button" onclick={() => toggle(column.id)} class="group flex h-7 w-full items-center gap-1.5 rounded-[6px] px-1.5 outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] {column.align === 'end' ? 'flex-row-reverse' : ''}">
+							<button type="button" onclick={() => toggle(column.id)} class="group flex h-7 w-full items-center gap-1.5 rounded-[6px] px-1.5 outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.06] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] {column.align === 'end' ? 'flex-row-reverse' : ''}">
 								<span class="truncate text-[11px] font-semibold uppercase tracking-[0.08em] {active ? 'text-stone-700 dark:text-stone-200' : 'text-stone-500 group-hover:text-stone-700 dark:text-stone-400 dark:group-hover:text-stone-200'}">{column.header}</span>
-								<span aria-hidden="true" class="shrink-0 text-stone-700 transition-[opacity,transform] duration-200 dark:text-stone-200 {active ? 'scale-100 opacity-100' : 'scale-[0.72] opacity-0'}" class:rotate-180={state === 'descending'}><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 8.6V1.6M5 1.6 2.2 4.4M5 1.6l2.8 2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+								<motion.span aria-hidden="true" class="shrink-0 text-stone-700 dark:text-stone-200" initial={false} animate={{ rotate: state === 'descending' ? 180 : 0, opacity: active ? 1 : 0, scale: active ? 1 : 0.72 }} transition={reducedMotion.current ? INSTANT : SMALL}><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 8.6V1.6M5 1.6 2.2 4.4M5 1.6l2.8 2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg></motion.span>
 							</button>
 						{/if}
 					</div>
 				{/each}
 			</div>
 		</div>
-		<div role="rowgroup" class="relative overflow-y-auto overscroll-contain" style={`height:${Math.max(1, rows.length) * rowHeight}px`} style:max-height={maxHeight ? `${maxHeight}px` : undefined}>
+		<div role="rowgroup" class="relative overflow-y-auto overscroll-contain {maxHeight ? '[scrollbar-gutter:stable]' : ''}" style={`height:${Math.max(1, rows.length) * rowHeight}px`} style:max-height={maxHeight ? `${maxHeight}px` : undefined}>
 			{#if rows.length === 0}<div role="row" class="absolute inset-x-0 top-0 flex items-center px-3.5" style:height={`${rowHeight}px`}><span role="cell" class="text-[12.5px] text-stone-500 dark:text-stone-400">No rows</span></div>{/if}
 			{#each ordered as item, index (item.id)}
 				{@const markedRow = markable && marked === item.id}
-				<div role="row" aria-rowindex={index + 2} aria-current={markedRow ? 'true' : undefined} class="absolute inset-x-0 top-0 grid items-center gap-x-2 px-2 transition-colors duration-150 {markedRow ? 'bg-stone-100 dark:bg-white/[0.06]' : ''}" style={`height:${rowHeight}px;grid-template-columns:${template};transform:translateY(${index * rowHeight}px);transition:transform ${reducedMotion.current ? '0ms' : '520ms cubic-bezier(0.23, 1, 0.32, 1)'} ${Math.min(index, 8) * 18}ms`}>
-					{#if markable}<div role="cell"><button type="button" aria-pressed={markedRow} onclick={() => mark(item.id)} class="flex size-[18px] items-center justify-center rounded-[5px] border outline-none focus-visible:border-[#4568FF] {markedRow ? 'border-[#4568FF] bg-[#4568FF] text-white' : 'border-stone-200 text-transparent dark:border-white/15'}"><span class="sr-only">Follow {getRowLabel?.(item.row) ?? String(columns[0]?.value?.(item.row) ?? item.id)}</span><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.6 6.3 4.9 8.6 9.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></button></div>{/if}
+				<motion.div role="row" aria-rowindex={index + 2} aria-current={markedRow ? 'true' : undefined} initial={false} animate={{ y: index * rowHeight }} transition={reducedMotion.current ? INSTANT : { ...CELL, delay: Math.min(index, 8) * 0.018 }} class="absolute inset-x-0 top-0 grid items-center gap-x-2 px-2 transition-colors duration-150 {markedRow ? 'bg-stone-100 dark:bg-white/[0.06]' : ''}" style={{ height: rowHeight, gridTemplateColumns: template }}>
+					{#if markable}<div role="cell" class="min-w-0"><button type="button" aria-pressed={markedRow} onclick={() => mark(item.id)} class="flex size-[18px] items-center justify-center rounded-[5px] border outline-none focus-visible:border-[#4568FF] focus-visible:shadow-[0_1px_3px_rgba(28,25,23,0.18)] dark:focus-visible:border-[#93B0FF] dark:focus-visible:shadow-[0_1px_3px_rgba(0,0,0,0.5)] {markedRow ? 'border-[#4568FF] bg-[#4568FF] text-white dark:border-[#93B0FF] dark:bg-[#93B0FF] dark:text-stone-900' : 'border-stone-200 text-transparent dark:border-white/15'}"><span class="sr-only">Follow {getRowLabel?.(item.row) ?? String(columns[0]?.value?.(item.row) ?? item.id)}</span><span aria-hidden="true"><motion.svg width="11" height="11" viewBox="0 0 12 12" fill="none" initial={false} animate={{ scale: markedRow ? 1 : 0.4 }} transition={reducedMotion.current ? INSTANT : CELL}><path d="M2.6 6.3 4.9 8.6 9.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></motion.svg></span></button></div>{/if}
 					{#each columns as column, columnIndex (column.id)}
 						{@const raw = column.value?.(item.row)}
 						{@const content = column.cell ? column.cell(item.row) : raw === null || raw === undefined || raw === '' ? '—' : String(raw)}
 						<div role="cell" class="min-w-0 truncate px-1.5 text-[13px] {column.align === 'end' ? 'text-right' : ''} {column.numeric ? 'tabular-nums' : ''} {columnIndex === 0 ? 'font-medium text-stone-700 dark:text-stone-200' : 'text-stone-500 dark:text-stone-400'}">{content}</div>
 					{/each}
-				</div>
+				</motion.div>
 			{/each}
-			<div aria-hidden="true" class="pointer-events-none absolute inset-0 transition-opacity" style:opacity={moving ? '0' : '1'} style:transition={moving ? 'opacity 120ms cubic-bezier(0.4, 0, 1, 1)' : 'opacity 250ms cubic-bezier(0.23, 1, 0.32, 1)'}>
+			<motion.div aria-hidden="true" class="pointer-events-none absolute inset-0" initial={false} animate={{ opacity: moving ? 0 : 1 }} transition={moving ? HIDE : SHOW}>
 				{#each Array.from({ length: Math.max(0, rows.length - 1) }) as _, i (i)}<div class="absolute inset-x-0 border-t border-stone-200 dark:border-white/[0.16]" style:top={`${(i + 1) * rowHeight}px`}></div>{/each}
-			</div>
+			</motion.div>
 		</div>
 	</div>
 	<div role="status" aria-live="polite" class="sr-only">{message}</div>
 </div>
-
-<svelte:window onbeforeunload={() => clearTimeout(settleTimer)} />

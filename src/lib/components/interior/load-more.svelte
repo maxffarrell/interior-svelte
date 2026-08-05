@@ -19,7 +19,9 @@
 	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 
-	const CROSSFADE = { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 } as const;
+		const CROSSFADE = { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 } as const;
+		const INSTANT = { duration: 0 } as const;
+		const SPIN = { duration: 0.7, ease: 'linear', repeat: Infinity } as const;
 	const DEFAULT_LABELS: LoadMoreLabels = {
 		idle: 'Load more',
 		loading: 'Loading',
@@ -172,15 +174,15 @@
 		>
 			{#each ORDER as item (item)}
 				<motion.span
-					class="col-start-1 row-start-1 flex items-center gap-1.5 whitespace-nowrap {TONE[item]} transition-[opacity,transform,filter] duration-200"
+					class="col-start-1 row-start-1 flex items-center gap-1.5 whitespace-nowrap {TONE[item]}"
 					initial={false}
 					animate={item === status ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 3, filter: 'blur(3px)' }}
 					transition={reducedMotion.current ? { duration: 0 } : CROSSFADE}
 				>
-					{#if item === 'idle'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M2.6 4.2 5.5 7.1 8.4 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{/if}
-					{#if item === 'loading'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" class:animate-spin={!reducedMotion.current}><circle cx="5.5" cy="5.5" r="3.9" stroke="currentColor" stroke-width="1.5" opacity="0.25" /><path d="M5.5 1.6a3.9 3.9 0 0 1 3.9 3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>{/if}
-					{#if item === 'error'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M5.5 2.4v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /><rect x="4.7" y="7.5" width="1.6" height="1.6" rx="0.4" fill="currentColor" /></svg>{/if}
-					{#if item === 'end'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M2.2 5.7 4.5 8 8.8 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{/if}
+					{#if item === 'idle'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" class="shrink-0"><path d="M2.6 4.2 5.5 7.1 8.4 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{/if}
+					{#if item === 'loading'}<span aria-hidden="true"><motion.svg width="11" height="11" viewBox="0 0 11 11" fill="none" class="shrink-0" style={{ transformOrigin: '50% 50%' }} initial={false} animate={status === 'loading' && !reducedMotion.current ? { rotate: 360 } : { rotate: 0 }} transition={status === 'loading' && !reducedMotion.current ? SPIN : INSTANT}><circle cx="5.5" cy="5.5" r="3.9" stroke="currentColor" stroke-width="1.5" opacity="0.25" /><path d="M5.5 1.6a3.9 3.9 0 0 1 3.9 3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></motion.svg></span>{/if}
+					{#if item === 'error'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" class="shrink-0"><path d="M5.5 2.4v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /><rect x="4.7" y="7.5" width="1.6" height="1.6" rx="0.4" fill="currentColor" /></svg>{/if}
+					{#if item === 'end'}<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" class="shrink-0"><path d="M2.2 5.7 4.5 8 8.8 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{/if}
 					{text[item]}
 				</motion.span>
 			{/each}
