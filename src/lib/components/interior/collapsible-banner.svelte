@@ -21,7 +21,6 @@
 
 	<script lang="ts">
 		// @ts-nocheck
-		import { motion } from 'motion-sv';
 		import { reducedMotion } from '#lib/reduced-motion.svelte';
 
 		const EASE = [0.23, 1, 0.32, 1] as const;

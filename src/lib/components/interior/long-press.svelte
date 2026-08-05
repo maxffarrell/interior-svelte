@@ -14,7 +14,6 @@
 
 <script lang="ts">
 	// @ts-nocheck
-	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 	import { cn } from '#lib/utils';
 
@@ -100,6 +99,6 @@
 </script>
 
 <button type="button" aria-disabled={disabled || undefined} aria-describedby={id} onpointerdown={pointerdown} onpointermove={pointermove} onpointerup={end} onpointercancel={end} onpointerleave={end} onkeydown={keydown} onkeyup={keyup} onblur={end} onclick={click} oncontextmenu={(event) => event.preventDefault()} class={cn('group relative inline-flex h-9 select-none items-center rounded-[9px] border px-3.5 text-[13px] font-medium outline-none transition-[border-color,background-color,box-shadow,transform] duration-150 focus-visible:border-accent', holding ? 'translate-y-px mat-well' : fired ? 'border-accent bg-accent/7' : 'mat-cap', disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer', className)} style="touch-action:manipulation;-webkit-touch-callout:none">
-	<span class="relative grid"><span class="col-start-1 row-start-1 whitespace-nowrap text-ink-2">{@render children()}</span><motion.span aria-hidden initial={false} animate={{ clipPath: `inset(0 ${((1 - step / cells) * 100).toFixed(2)}% 0 0)` }} transition={reducedMotion.current ? INSTANT : CELL} class="col-start-1 row-start-1 whitespace-nowrap text-accent">{@render children()}</motion.span></span>
+	<span class="relative grid"><span class="col-start-1 row-start-1 whitespace-nowrap text-ink-2">{@render children()}</span><span aria-hidden="true" class="col-start-1 row-start-1 whitespace-nowrap text-accent transition-[clip-path] duration-150" style:clip-path={`inset(0 ${((1 - step / cells) * 100).toFixed(2)}% 0 0)`}>{@render children()}</span></span>
 	<span id={id} class="sr-only">Press and hold for {Math.round(duration / 100) / 10} seconds to confirm</span>
 </button>

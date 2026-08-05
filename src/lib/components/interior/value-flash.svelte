@@ -12,7 +12,7 @@
 
 <script lang="ts">
 	// @ts-nocheck
-	import { AnimatePresence, motion } from 'motion-sv';
+	import { fade, fly, scale } from 'svelte/transition';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 	import { cn } from '#lib/utils';
 
@@ -72,21 +72,17 @@
 
 <span class={cn('relative inline-grid grid-flow-col items-center gap-1.5 rounded-[6px] px-1.5 py-[3px] text-[13px] font-medium tabular-nums transition-colors duration-200', flashing && direction === 'up' ? 'text-moss' : flashing && direction === 'down' ? 'text-flag' : 'text-ink-2', className)}>
 	{#if direction}
-		<motion.span aria-hidden initial={{ opacity: 0 }} animate={{ opacity: flashing ? 1 : 0 }} transition={reducedMotion.current ? STILL : flashing ? CELL : CLEAR} class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} />
+		<span aria-hidden="true" class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} in:fade={{ duration: reducedMotion.current ? 0 : 160 }} out:fade={{ duration: reducedMotion.current ? 0 : 160 }} />
 	{/if}
 	<span aria-hidden class="relative inline-grid overflow-hidden">
-		<AnimatePresence initial={false} mode="popLayout">
-			{#key changeId}
-				<motion.span key={changeId} initial={reducedMotion.current ? { opacity: 0 } : { opacity: 0, y: direction === 'down' ? '-0.85em' : '0.85em', filter: 'blur(5px)' }} animate={{ opacity: 1, y: '0em', filter: 'blur(0px)' }} exit={reducedMotion.current ? { opacity: 0, transition: STILL } : { opacity: 0, y: direction === 'down' ? '0.7em' : '-0.7em', filter: 'blur(4px)', transition: DROP }} transition={reducedMotion.current ? STILL : ROLL} class="col-start-1 row-start-1">{text}</motion.span>
-			{/key}
-		</AnimatePresence>
+		{#key changeId}<span in:fly={{ y: direction === 'down' ? -14 : 14, duration: reducedMotion.current ? 0 : 180 }} out:fly={{ y: direction === 'down' ? 10 : -10, duration: reducedMotion.current ? 0 : 140 }} class="col-start-1 row-start-1">{text}</span>{/key}
 	</span>
 	<span aria-hidden class="relative grid size-[1em] place-items-center">
 		<AnimatePresence initial={false}>
 			{#if flashing && direction}
-				<motion.svg key={`${changeId}-${direction}`} viewBox="0 0 256 256" fill="currentColor" initial={reducedMotion.current ? { opacity: 0 } : { opacity: 0, scale: 0.4, y: direction === 'up' ? '0.3em' : '-0.3em' }} animate={{ opacity: 1, scale: 1, y: '0em' }} exit={reducedMotion.current ? { opacity: 0, transition: STILL } : { opacity: 0, scale: 0.8, transition: CLEAR }} transition={reducedMotion.current ? STILL : POP} class="col-start-1 row-start-1 block size-[0.68em]">
+				<svg viewBox="0 0 256 256" fill="currentColor" in:scale={{ start: 0.4, duration: reducedMotion.current ? 0 : 180 }} out:fade={{ duration: reducedMotion.current ? 0 : 140 }} class="col-start-1 row-start-1 block size-[0.68em]">
 					{#if direction === 'up'}<path d="M128 68 L210 180 H46 Z" />{:else}<path d="M128 188 L46 76 H210 Z" />{/if}
-				</motion.svg>
+				</svg>
 			{/if}
 		</AnimatePresence>
 	</span>
