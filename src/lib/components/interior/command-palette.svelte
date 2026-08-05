@@ -60,7 +60,7 @@
 
 	function dismiss() { onDismiss?.(); }
 	function run(item?: CommandItem) { const target = item ?? results.find((candidate) => candidate.id === active); if (target) onSelect(target); }
-	function move(delta: number) { if (results.length) activeId = results[(activeIndex + delta + results.length) % results.length].id; }
+	function move(delta: number) { if (results.length) { activeId = results[(activeIndex + delta + results.length) % results.length].id; queueMicrotask(() => list?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' })); } }
 	function keydown(event: KeyboardEvent) {
 		if (event.key === 'ArrowDown') { event.preventDefault(); move(1); }
 		else if (event.key === 'ArrowUp') { event.preventDefault(); move(-1); }
@@ -71,7 +71,13 @@
 	}
 
 	$effect(() => {
-		if (autoFocus || overlayOpen) input?.focus({ preventScroll: true });
+		if (autoFocus && (overlayOpen || !isOverlay)) input?.focus({ preventScroll: true });
+		if (!overlayOpen) return;
+		const previous = document.body.style.overflow;
+		const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') dismiss(); };
+		document.body.style.overflow = 'hidden';
+		document.addEventListener('keydown', escape);
+		return () => { document.body.style.overflow = previous; document.removeEventListener('keydown', escape); };
 	});
 	$effect(() => {
 		if (overlayOpen !== undefined && overlayOpen) query = '';

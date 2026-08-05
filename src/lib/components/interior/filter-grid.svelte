@@ -27,6 +27,7 @@
 
 <script lang="ts" generics="T">
 	import { fade, scale } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
 	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
@@ -153,13 +154,13 @@
 			style="display:grid;grid-template-columns:repeat({cols},minmax(0,1fr));grid-auto-rows:{rowHeight}px;gap:{gap}px;height:{box}px"
 		>
 			{#each visible as item (getKey(item))}
-				<li in:scale={{ duration: reducedMotion.current ? 0 : 180, start: 0.97 }} out:fade={{ duration: reducedMotion.current ? 0 : 140 }} animate:flip={{ duration: reducedMotion.current ? 0 : 200 }} class="min-w-0 overflow-hidden rounded-[11px] border border-hairline bg-panel p-2.5 shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)]">
+				<li in:scale={{ duration: reducedMotion.current ? 0 : 180, start: 0.97, easing: cubicOut }} out:fade={{ duration: reducedMotion.current ? 0 : 140, easing: cubicOut }} animate:flip={{ duration: reducedMotion.current ? 0 : 200, easing: cubicOut }} class="min-w-0 overflow-hidden rounded-[11px] border border-hairline bg-panel p-2.5 shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)]">
 					{@render children(item)}
 				</li>
 			{/each}
 		</ul>
 		{#if visible.length === 0}
-			<div transition:fade={{ duration: reducedMotion.current ? 0 : 200 }} class="pointer-events-none absolute inset-0 grid place-items-center">
+			<div transition:fade={{ duration: reducedMotion.current ? 0 : 200, easing: cubicOut }} class="pointer-events-none absolute inset-0 grid place-items-center">
 				<span class="text-[12.5px] text-ink-3">{emptyLabel}</span>
 			</div>
 		{/if}

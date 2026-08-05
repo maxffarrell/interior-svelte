@@ -124,7 +124,7 @@
 <div {...rest} class={cn('w-full select-none', className)}>
 	<div class="mb-2.5 flex items-baseline justify-between gap-3">
 		<span id="slider-detents-label" class="text-[12.5px] text-ink-3">{label}</span>
-		<span class="grid justify-items-start"><span aria-hidden class="invisible col-start-1 row-start-1 whitespace-pre font-mono text-[11px]">{widest}</span><span class="col-start-1 row-start-1 whitespace-pre font-mono text-[11px] tabular-nums text-ink-2">{format(value)}{#if suffix}<span class="text-ink-3"> · {suffix}</span>{/if}</span></span>
+		<span class="grid justify-items-start"><span aria-hidden="true" class="invisible col-start-1 row-start-1 whitespace-pre font-mono text-[11px]">{widest}</span><span class="col-start-1 row-start-1 whitespace-pre font-mono text-[11px] tabular-nums text-ink-2">{format(value)}{#if suffix}<motion.span initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={reducedMotion.current ? INSTANT : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }} class="text-ink-3"> · {suffix}</motion.span>{/if}</span></span>
 	</div>
 	<div
 		bind:this={track}

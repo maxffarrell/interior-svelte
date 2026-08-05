@@ -41,6 +41,8 @@
 </script>
 
 <script lang="ts">
+	// @ts-nocheck
+	import { motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 
 	let {
@@ -153,9 +155,9 @@
 					class="flex h-7 cursor-default select-none items-center gap-1 rounded-[8px] px-1.5 text-stone-600 outline-none transition-colors duration-150 hover:bg-stone-100/60 focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:text-stone-300 dark:hover:bg-white/[0.04] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF] {selectedId === node.id ? 'bg-stone-100/80 font-medium text-stone-800 dark:bg-white/[0.07] dark:text-stone-100' : ''}"
 				>
 					{#if row.branch}
-						<span aria-hidden="true" class="flex size-4 shrink-0 items-center justify-center text-stone-400 transition-transform duration-200 dark:text-stone-500" class:rotate-90={row.open}>
+						<motion.span aria-hidden="true" class="flex size-4 shrink-0 items-center justify-center text-stone-400 dark:text-stone-500" initial={false} animate={{ rotate: row.open ? 90 : 0 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 700, damping: 46, mass: 0.5 }}>
 							<svg viewBox="0 0 12 12" width="10" height="10" focusable="false"><path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-						</span>
+						</motion.span>
 					{:else}<span class="size-4 shrink-0"></span>{/if}
 					<span class="min-w-0 flex-1 truncate text-[12.5px]">{node.label}</span>
 					{#if node.meta}<span class="shrink-0 font-mono text-[10.5px] tabular-nums text-stone-400 dark:text-stone-500">{node.meta}</span>{/if}

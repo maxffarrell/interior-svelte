@@ -120,7 +120,19 @@
 		if (!open) return;
 		previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		const body = document.body; const overflow = body.style.overflow; body.style.overflow = 'hidden';
-		requestAnimationFrame(() => frame?.focus({ preventScroll: true }));
+		requestAnimationFrame(() => {
+			if (originRef && image && frame && !reducedMotion.current) {
+				const from = originRef.getBoundingClientRect();
+				const to = image.getBoundingClientRect();
+				const start = Math.max(0.05, Math.min(from.width / Math.max(1, to.width), from.height / Math.max(1, to.height)));
+				x.set(from.left + from.width / 2 - (to.left + to.width / 2));
+				y.set(from.top + from.height / 2 - (to.top + to.height / 2));
+				scale.set(start);
+				borderRadius.set(9);
+				animate(x, 0, HOME); animate(y, 0, HOME); animate(scale, 1, HOME); animate(borderRadius, 14, HOME);
+			}
+			frame?.focus({ preventScroll: true });
+		});
 		return () => { body.style.overflow = overflow; if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true }); };
 	});
 	$effect(() => {
