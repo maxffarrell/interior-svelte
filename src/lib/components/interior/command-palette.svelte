@@ -98,12 +98,12 @@
 			<span class="min-w-[3ch] shrink-0 text-right font-mono text-[9.5px] tabular-nums text-stone-500">{results.length}</span>
 		</div>
 		<div class="relative" style:height={`${height}px`}>
-			<ul bind:this={list} id={`${id}-list`} role="listbox" aria-label={label} onmousedown={(event) => event.preventDefault()} class="absolute inset-0 flex flex-col gap-[2px] overflow-y-auto overscroll-contain p-[5px]">
+			<ul bind:this={list} id={`${id}-list`} role="listbox" aria-label={label} onmousedown={(event) => event.preventDefault()} class="absolute inset-0 flex flex-col gap-[2px] overflow-y-auto overscroll-contain p-[5px] [scrollbar-gutter:stable]">
 				{#each results as item (item.id)}
-					<li id={`${id}-${item.id}`} role="option" aria-selected={item.id === active} onpointermove={() => (activeId = item.id)} onclick={() => run(item)} class="relative flex h-9 shrink-0 cursor-default items-center rounded-[9px] px-2.5">
+					<motion.li layout id={`${id}-${item.id}`} role="option" aria-selected={item.id === active} onpointermove={() => (activeId = item.id)} onclick={() => run(item)} class="relative flex h-9 shrink-0 cursor-default items-center rounded-[9px] px-2.5">
 						<motion.span aria-hidden initial={false} animate={{ opacity: item.id === active ? 1 : 0 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }} class="absolute inset-0 rounded-[9px] bg-stone-100 dark:bg-white/10" />
 						<span class="relative flex min-w-0 flex-1 items-center gap-2.5"><span class="truncate text-[13px] font-medium text-stone-700 dark:text-stone-200">{item.label}</span>{#if item.hint}<span class="hidden shrink-0 text-[11.5px] text-stone-500 sm:inline">{item.hint}</span>{/if}{#if item.shortcut}<span class="ml-auto flex shrink-0 items-center gap-1">{#each item.shortcut as key}<span class="flex h-[18px] min-w-[18px] items-center justify-center rounded-[5px] border border-stone-200 px-1 font-mono text-[9.5px] text-stone-500">{key}</span>{/each}</span>{/if}</span>
-					</li>
+					</motion.li>
 				{/each}
 			</ul>
 			{#if !results.length}<motion.p initial={reducedMotion.current ? false : { opacity: 0 }} animate={{ opacity: 1 }} class="pointer-events-none absolute inset-0 flex items-center justify-center px-3 text-center text-[12.5px] text-stone-500">{emptyLabel}</motion.p>{/if}

@@ -57,7 +57,8 @@
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.reveal-unit {
+		.reveal-unit.reveal-active {
+			opacity: 1;
 			animation: none;
 		}
 	}
