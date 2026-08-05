@@ -149,15 +149,15 @@
 
 {#if open}
 	<div {...rest} role="dialog" aria-modal="true" aria-labelledby="lightbox-title" class={cn('fixed inset-0 z-50', className)} onkeydown={chromeKeydown} transition:fade={{ duration: reducedMotion.current ? 0 : 200 }}>
-		<div aria-hidden class="absolute inset-0 bg-ink/80" />
+		<motion.div aria-hidden="true" initial={reducedMotion.current ? { opacity: 1 } : { opacity: 0 }} animate={{ opacity: 1 }} class="absolute inset-0 bg-ink/80" transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }} />
 		<div bind:this={frame} tabindex="-1" role="group" aria-labelledby="lightbox-title" aria-describedby="lightbox-hint" onpointerdown={pointerdown} onpointermove={pointermove} onpointerup={pointerup} onpointercancel={pointercancel} onlostpointercapture={pointercancel} ondblclick={doubleclick} onkeydown={keydown} style="touch-action:none;-webkit-touch-callout:none" class={cn('absolute inset-0 overflow-hidden outline-none select-none', zoomed ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in')}>
-			<div class="absolute inset-0 flex items-center justify-center p-4 sm:p-14">
+			<motion.div class="absolute inset-0 flex items-center justify-center p-4 sm:p-14" initial={reducedMotion.current ? false : { filter: 'blur(6px)' }} animate={{ filter: 'blur(0px)' }} transition={reducedMotion.current ? { duration: 0 } : { duration: 0.35, ease: [0.23, 1, 0.32, 1] }}>
 				<motion.img bind:this={image} src={src} alt={alt} width={width} height={height} draggable="false" style={{ x, y, scale, borderRadius }} class="max-h-full max-w-full object-contain" />
-			</div>
+			</motion.div>
 		</div>
 		<div class="pointer-events-none absolute inset-0 flex items-start justify-between gap-3 p-3 sm:p-4">
 			<p id="lightbox-title" class="pointer-events-auto max-w-[65%] truncate rounded-[9px] border border-hairline bg-panel px-2.5 py-1.5 text-[12.5px] text-ink-2">{caption ?? alt}</p>
-			<div class="pointer-events-auto flex items-center gap-2"><button data-lightbox-focus type="button" onclick={toggleZoom} aria-label={zoomed ? 'Zoom out' : 'Zoom in'} class="grid size-8 place-items-center rounded-[9px] border border-hairline bg-panel text-ink-3">⌕</button><button data-lightbox-focus type="button" onclick={onClose} aria-label="Close" class="grid size-8 place-items-center rounded-[9px] border border-hairline bg-panel text-ink-3">×</button></div>
+			<div class="pointer-events-auto flex items-center gap-2"><button data-lightbox-focus type="button" onclick={toggleZoom} aria-label={zoomed ? 'Zoom out' : 'Zoom in'} class="grid size-8 place-items-center rounded-[9px] border border-hairline bg-panel text-ink-3"><svg viewBox="0 0 256 256" class="size-[15px]" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="84" /><path d="M175.4 175.4 224 224M84 116h64" /><motion.path d="M116 84v64" initial={false} animate={{ opacity: zoomed ? 0 : 1 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 700, damping: 46, mass: 0.5 }} /></svg></button><button data-lightbox-focus type="button" onclick={onClose} aria-label="Close" class="grid size-8 place-items-center rounded-[9px] border border-hairline bg-panel text-ink-3"><svg viewBox="0 0 256 256" class="size-[15px]" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><path d="M200 56 56 200M200 200 56 56" /></svg></button></div>
 		</div>
 		<p id="lightbox-hint" class="sr-only">Scroll to zoom toward the pointer, or press plus and minus. Drag or use the arrow keys to pan, and double-click to switch between fit and close-up. Press zero to return to the starting frame; Escape returns home first, then closes.</p>
 		<p role="status" class="sr-only">Zoom {(1 + (settledStep / steps) * (top - 1)).toFixed(1)} times</p>
