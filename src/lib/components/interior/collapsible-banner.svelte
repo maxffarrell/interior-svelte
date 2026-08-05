@@ -98,7 +98,7 @@
 					class="group flex min-w-0 flex-1 items-center gap-2 rounded-[7px] text-left outline-none focus-visible:bg-[#4568FF]/[0.06] focus-visible:shadow-[inset_0_0_0_1px_#4568FF] dark:focus-visible:bg-[#93B0FF]/[0.1] dark:focus-visible:shadow-[inset_0_0_0_1px_#93B0FF]"
 				>
 					<span id={titleId} class="min-w-0 flex-1 truncate text-[13px] font-medium leading-5 text-stone-700 dark:text-stone-100">{title}</span>
-					<motion.span aria-hidden="true" class="flex shrink-0 text-stone-400 group-hover:text-stone-600 dark:text-stone-500 dark:group-hover:text-stone-300" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reducedMotion.current ? INSTANT : NUDGE}><svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true"><polyline points="208 96 128 176 48 96" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" /></svg></motion.span>
+					<span aria-hidden="true" class="flex shrink-0 text-stone-400 transition-transform duration-200 group-hover:text-stone-600 dark:text-stone-500 dark:group-hover:text-stone-300" class:rotate-180={open}><svg width="14" height="14" viewBox="0 0 256 256" fill="none" aria-hidden="true"><polyline points="208 96 128 176 48 96" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
 				</button>
 			{:else}
 				<span id={titleId} class="min-w-0 flex-1 truncate text-[13px] font-medium leading-5 text-stone-700 dark:text-stone-100">{title}</span>
@@ -110,13 +110,13 @@
 		</div>
 
 		{#if hasBody}
-			<motion.div id={bodyId} inert={!open} initial={false} animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }} transition={disclose} style="overflow: hidden">
-				<motion.div initial={false} animate={{ y: open ? 0 : -6 }} transition={reducedMotion.current ? INSTANT : DISCLOSE} class="pb-2.5 pl-[46px] pr-2.5">
+			<div id={bodyId} inert={!open} class="grid overflow-hidden transition-[grid-template-rows,opacity]" style:grid-template-rows={open ? '1fr' : '0fr'} style:opacity={open ? 1 : 0}>
+				<div class="min-h-0 pb-2.5 pl-[46px] pr-2.5">
 					{#if description}<p class="text-[12.5px] leading-relaxed text-stone-500 dark:text-stone-400">{description}</p>{/if}
 					{@render children?.()}
 					{#if action}<div class="mt-2">{@render action()}</div>{/if}
-				</motion.div>
-			</motion.div>
+				</div>
+			</div>
 		{/if}
 	</div>
 </div>
