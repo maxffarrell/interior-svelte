@@ -22,7 +22,7 @@
 	const POP = { type: 'spring', stiffness: 640, damping: 22, mass: 0.7 } as const;
 	const INSTANT = { duration: 0 } as const;
 
-	let { onLongPress, children, duration = 550, steps = 12, moveTolerance = 8, haptic = true, onCancel, disabled = false, class: className, ...rest }: Props = $props();
+	let { onLongPress, children, duration = 550, steps = 12, moveTolerance = 8, haptic = true, onCancel, disabled = false, ref: _ref, class: className, ...rest }: Props = $props();
 	const cells = $derived(Math.max(1, Math.round(steps)));
 	let step = $state(0);
 	let holding = $state(false);

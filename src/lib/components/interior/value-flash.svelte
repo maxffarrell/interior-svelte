@@ -31,6 +31,7 @@
 		label,
 		hold = 900,
 		announceAfter = 700,
+		ref: _ref,
 		class: className,
 		...rest
 	}: Props = $props();

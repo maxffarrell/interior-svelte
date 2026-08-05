@@ -42,6 +42,7 @@
 		onDismiss,
 		dismissLabel = 'Dismiss notice',
 		dismissedMessage = 'Notice dismissed.',
+		ref: _ref,
 		class: className,
 		...rest
 	}: Props = $props();

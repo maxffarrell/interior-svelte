@@ -35,6 +35,7 @@
 		minVisible = 380,
 		label,
 		skeleton,
+		ref: _ref,
 		class: className,
 		...rest
 	}: Props = $props();
@@ -89,9 +90,8 @@
 	style:height={`${box}px`}
 	class="relative grid overflow-y-auto overscroll-contain text-stone-700 dark:text-stone-200 {className ?? ''}"
 >
-	<motion.div
-		bind:this={body}
-		class="col-start-1 row-start-1 min-w-0"
+		<motion.div
+			class="col-start-1 row-start-1 min-w-0"
 		initial={false}
 		animate={
 			reducedMotion.current
