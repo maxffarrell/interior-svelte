@@ -4,22 +4,21 @@
 </script>
 
 <script lang="ts">
+	import { motion } from 'motion-sv';
+	import { reducedMotion } from '#lib/reduced-motion.svelte';
 	let { value = null, label = 'Progress', class: className, ...rest }: Props = $props();
 	let percent = $derived(value == null ? null : Math.max(0, Math.min(100, value)));
 </script>
 
 <div {...rest} class="grid gap-2 {className ?? ''}">
 	<div class="flex items-center justify-between text-[11px] text-ink-3">
-		<span>{label}</span><span class="tnum font-mono"
-			>{percent == null ? 'Working' : `${percent}%`}</span
-		>
+		<span>{label}</span><span aria-hidden="true" class="grid justify-items-end text-ink-3">
+			<motion.span class="col-start-1 row-start-1 whitespace-nowrap" initial={false} animate={{ opacity: percent == null ? 1 : 0 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }}>Working</motion.span>
+			<motion.span class="col-start-1 row-start-1 whitespace-nowrap tnum font-mono" initial={false} animate={{ opacity: percent == null ? 0 : 1 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 34, mass: 0.8 }}>{percent ?? 0}%</motion.span>
+		</span>
 	</div>
-	<div class="mat-well relative h-2 overflow-hidden rounded-full">
-		<div
-			class="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-500"
-			style:width={percent == null ? '38%' : `${percent}%`}
-			data-indeterminate={percent == null}
-		></div>
+	<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent ?? undefined} class="mat-well relative h-2 overflow-hidden rounded-full">
+		<motion.div aria-hidden="true" class="absolute inset-y-0 left-0 origin-left rounded-full bg-accent" initial={false} animate={{ scaleX: percent == null ? 0 : (percent ?? 0) / 100 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 210, damping: 34, mass: 0.9 }}></motion.div>
 	</div>
 </div>
 

@@ -42,7 +42,7 @@
 
 <script lang="ts">
 	// @ts-nocheck
-	import { motion } from 'motion-sv';
+	import { AnimatePresence, motion } from 'motion-sv';
 	import { reducedMotion } from '#lib/reduced-motion.svelte';
 
 	let {
@@ -163,23 +163,7 @@
 					{#if node.meta}<span class="shrink-0 font-mono text-[10.5px] tabular-nums text-stone-400 dark:text-stone-500">{node.meta}</span>{/if}
 				</div>
 
-				{#if row.branch}
-					<ul
-						role="group"
-						aria-hidden={!row.open}
-						inert={!row.open}
-						class="grid overflow-hidden transition-[grid-template-rows,opacity]"
-						style:grid-template-rows={row.open ? '1fr' : '0fr'}
-						style:opacity={row.open ? '1' : '0'}
-						style:transition-duration={reducedMotion.current ? '0ms' : row.open ? '280ms' : '200ms'}
-					>
-						<li class="min-h-0 overflow-hidden">
-							<div class="ml-[13px] border-l border-stone-200/80 pl-[7px] dark:border-white/[0.16]">
-								{@render renderNodes(node.children ?? [], level + 1)}
-							</div>
-						</li>
-					</ul>
-				{/if}
+				{#if row.branch}<AnimatePresence initial={false}>{#if row.open}<motion.ul role="group" initial={reducedMotion.current ? { opacity: 0 } : { height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={reducedMotion.current ? { opacity: 0 } : { height: 0, opacity: 0 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 460, damping: 38, mass: 0.8 }} class="overflow-hidden"><li class="min-h-0 overflow-hidden"><div class="ml-[13px] border-l border-stone-200/80 pl-[7px] dark:border-white/[0.16]">{@render renderNodes(node.children ?? [], level + 1)}</div></li></motion.ul>{/if}</AnimatePresence>{/if}
 			</li>
 		{/if}
 	{/each}

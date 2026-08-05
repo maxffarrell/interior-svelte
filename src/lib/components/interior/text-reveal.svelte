@@ -4,17 +4,33 @@
 		text: string;
 		by?: 'word' | 'character';
 		stagger?: number;
+		startOnView?: boolean;
+		play?: boolean;
+		once?: boolean;
+		amount?: number;
 	};
 </script>
 
 <script lang="ts">
-	let { text, by = 'word', stagger = 45, class: className, ...rest }: Props = $props();
+	import { onMount } from 'svelte';
+	let { text, by = 'word', stagger = 45, startOnView = true, play = true, once = true, amount = 0.35, class: className, ...rest }: Props = $props();
 	let units = $derived(by === 'character' ? Array.from(text) : text.split(' '));
+	let started = $state(!startOnView);
+	let root: HTMLSpanElement | null = null;
+	onMount(() => {
+		if (!startOnView) { started = true; return; }
+		if (!('IntersectionObserver' in window)) { started = true; return; }
+		const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { started = true; if (once) observer.disconnect(); } else if (!once) started = false; }, { threshold: amount });
+		if (root) observer.observe(root);
+		return () => observer.disconnect();
+	});
 </script>
 
-<span {...rest} class={className ?? ''}>
+<span bind:this={root} {...rest} class={className ?? ''}>
+	<span class="sr-only">{text}</span>
 	{#each units as unit, index (index)}<span
 			class="reveal-unit"
+			class:reveal-active={started && play}
 			style:animation-delay={`${index * stagger}ms`}
 			>{unit}{by === 'word' && index < units.length - 1 ? ' ' : ''}</span
 		>{/each}
@@ -23,6 +39,9 @@
 <style>
 	.reveal-unit {
 		display: inline-block;
+		opacity: 0;
+	}
+	.reveal-unit.reveal-active {
 		animation: reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) both;
 	}
 	@keyframes reveal {
