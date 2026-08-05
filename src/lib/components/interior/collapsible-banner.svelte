@@ -79,7 +79,6 @@
 </script>
 
 <motion.div
-	{...rest}
 	initial={false}
 	animate={{ height: dismissed ? 0 : 'auto', opacity: dismissed ? 0 : 1 }}
 	transition={reducedMotion.current

@@ -72,7 +72,7 @@
 	});
 </script>
 
-<motion.span {...rest} initial={false} animate={{ scale: reducedMotion.current ? 1 : flashing ? 1.05 : 1 }} transition={transition} class={cn('relative inline-grid grid-flow-col items-center gap-1.5 rounded-[6px] px-1.5 py-[3px] text-[13px] font-medium tabular-nums transition-colors duration-200', flashing && direction === 'up' ? 'text-moss' : flashing && direction === 'down' ? 'text-flag' : 'text-ink-2', className)}>
+<motion.span initial={false} animate={{ scale: reducedMotion.current ? 1 : flashing ? 1.05 : 1 }} transition={transition} class={cn('relative inline-grid grid-flow-col items-center gap-1.5 rounded-[6px] px-1.5 py-[3px] text-[13px] font-medium tabular-nums transition-colors duration-200', flashing && direction === 'up' ? 'text-moss' : flashing && direction === 'down' ? 'text-flag' : 'text-ink-2', className)}>
 	{#if direction}
 		<motion.span aria-hidden initial={{ opacity: 0 }} animate={{ opacity: flashing ? 1 : 0 }} transition={reducedMotion.current ? STILL : flashing ? CELL : CLEAR} class={cn('pointer-events-none absolute inset-0 rounded-[6px]', direction === 'up' ? 'bg-moss/12' : 'bg-flag/12')} />
 	{/if}
