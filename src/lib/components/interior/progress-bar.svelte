@@ -18,7 +18,7 @@
 		</span>
 	</div>
 	<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent ?? undefined} class="mat-well relative h-2 overflow-hidden rounded-full">
-		<motion.div aria-hidden="true" class="absolute inset-y-0 left-0 origin-left rounded-full bg-accent" initial={false} animate={{ scaleX: percent == null ? 0 : (percent ?? 0) / 100 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 210, damping: 34, mass: 0.9 }}></motion.div>
+		{#if percent == null}<motion.div aria-hidden="true" class="absolute inset-y-0 left-0 w-[38%] rounded-full bg-accent" initial={false} animate={reducedMotion.current ? { x: 0 } : { x: ['-120%', '280%'] }} transition={reducedMotion.current ? { duration: 0 } : { duration: 1.4, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }}></motion.div>{:else}<motion.div aria-hidden="true" class="absolute inset-y-0 left-0 origin-left rounded-full bg-accent" initial={false} animate={{ scaleX: percent / 100 }} transition={reducedMotion.current ? { duration: 0 } : { type: 'spring', stiffness: 210, damping: 34, mass: 0.9 }}></motion.div>{/if}
 	</div>
 </div>
 
