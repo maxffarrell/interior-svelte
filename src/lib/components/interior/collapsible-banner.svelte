@@ -78,15 +78,7 @@
 	function restore() { commit('open'); }
 </script>
 
-<motion.div
-	initial={false}
-	animate={{ height: dismissed ? 0 : 'auto', opacity: dismissed ? 0 : 1 }}
-	transition={reducedMotion.current
-		? INSTANT
-		: { height: DISCLOSE, opacity: { duration: 0.14, ease: EASE } }}
-	style="overflow: hidden"
-	class="rounded-[11px]"
->
+<div style:overflow="hidden" class="rounded-[11px]">
 	<div role="region" aria-labelledby={titleId} class="rounded-[11px] border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.06),0_4px_10px_-8px_rgba(28,25,23,0.45)] dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_6px_rgba(0,0,0,0.45)] {className ?? ''}">
 		<div class="flex items-center gap-2.5 p-2.5">
 			<span aria-hidden="true" class="grid size-[26px] shrink-0 place-items-center rounded-[7px] bg-stone-100/70 text-stone-500 shadow-[inset_0_1px_2px_rgba(28,25,23,0.06)] dark:bg-[#252522] dark:text-stone-400 dark:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">
@@ -129,6 +121,6 @@
 			</motion.div>
 		{/if}
 	</div>
-</motion.div>
+</div>
 
 <span role="status" aria-live="polite" class="sr-only">{dismissed ? dismissedMessage : ''}</span>
