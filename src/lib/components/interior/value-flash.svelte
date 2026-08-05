@@ -31,9 +31,7 @@
 		label,
 		hold = 900,
 		announceAfter = 700,
-		ref: _ref,
-		class: className,
-		...rest
+		class: className
 	}: Props = $props();
 
 	let previous = $state(value);

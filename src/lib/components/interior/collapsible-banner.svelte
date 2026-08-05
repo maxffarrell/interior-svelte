@@ -42,9 +42,7 @@
 		onDismiss,
 		dismissLabel = 'Dismiss notice',
 		dismissedMessage = 'Notice dismissed.',
-		ref: _ref,
-		class: className,
-		...rest
+		class: className
 	}: Props = $props();
 
 	let internal = $state<BannerState>(defaultState);
