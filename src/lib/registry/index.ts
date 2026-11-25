@@ -1,4 +1,4 @@
-import { meta, type ComponentMeta, type Prop } from './meta';
+import { meta, type ComponentMeta, type Prop } from './meta.ts';
 
 export type { Prop, ComponentMeta };
 
