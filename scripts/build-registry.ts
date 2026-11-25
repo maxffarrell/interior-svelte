@@ -1,8 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { readyEntries } from '../src/lib/registry/index';
-import { meta } from '../src/lib/registry/meta';
+import { readyEntries } from '../src/lib/registry/index.ts';
+import { meta } from '../src/lib/registry/meta.ts';
 
 const HOMEPAGE = 'https://interior-svelte.max-gottschalk.workers.dev';
 const OUT_DIR = 'static/r';
